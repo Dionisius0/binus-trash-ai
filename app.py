@@ -16,135 +16,107 @@ def download_dan_muat_model():
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v2.h5'
     if not os.path.exists(nama_file):
-        with st.spinner('Menyiapkan Papan Tulis...'):
+        with st.spinner('Menyiapkan Sistem AI...'):
             gdown.download(url, nama_file, quiet=False)
     return tf.keras.models.load_model(nama_file)
 
 model = download_dan_muat_model()
 
-# --- 2. DESAIN UI PAPAN TULIS (CSS TINGKAT LANJUT) ---
-st.set_page_config(page_title="Binus Trash AI", layout="wide")
+# --- 2. DESAIN UI "MODERN GO-GREEN" ---
+st.set_page_config(page_title="Binus Trash AI", page_icon="♻️", layout="wide")
 
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet">
     <style>
-    /* Latar belakang Meja Kayu */
+    /* Warna latar belakang aplikasi yang bersih (Light Mint) */
     .stApp {
-        background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
-        background-color: #5d4037;
+        background-color: #f2fcf5; 
     }
     
-    /* Papan Tulis Utama */
-    .main-board {
-        background-color: #2e4d3d;
-        border: 15px solid #3e2723;
-        border-radius: 10px;
-        padding: 40px;
-        box-shadow: 20px 20px 50px rgba(0,0,0,0.6);
-        font-family: 'Architects Daughter', cursive;
-        color: white;
+    /* Desain Kartu Modern (Putih dengan bayangan halus) */
+    .kartu-modern {
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        border-top: 5px solid #2e7d32; /* Garis hijau elegan di atas */
+        margin-bottom: 20px;
     }
 
-    /* Bingkai Polaroid untuk Foto */
-    .polaroid {
-        background: white;
-        padding: 15px 15px 40px 15px;
-        box-shadow: 10px 10px 20px rgba(0,0,0,0.4);
-        transform: rotate(-1deg);
-        color: #333;
-        text-align: center;
-        border-radius: 2px;
-        margin: 10px;
+    /* Teks Judul Utama */
+    .judul-hijau {
+        color: #1b5e20;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 800;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
     }
 
-    /* Tombol Bergaya Klasik */
+    /* Desain Tombol Start-up */
     div.stButton > button {
-        background-color: #f5f5dc;
-        color: #5d4037;
-        border-radius: 10px;
+        background-color: #2e7d32;
+        color: white;
+        border-radius: 8px;
         font-weight: bold;
-        border: 2px solid #3e2723;
-        font-family: 'Architects Daughter', cursive;
-        font-size: 18px;
+        border: none;
+        padding: 12px 24px;
+        transition: all 0.3s ease 0s;
         width: 100%;
+        font-size: 16px;
     }
-
-    /* Sticker Notulensi di Pojok */
-    .sticky-note {
-        background-color: #fff9c4;
-        color: #333;
-        padding: 15px;
-        border-radius: 2px;
-        transform: rotate(2deg);
-        box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
-        font-family: 'Architects Daughter', cursive;
+    div.stButton > button:hover {
+        background-color: #1b5e20;
+        box-shadow: 0px 8px 15px rgba(46, 125, 50, 0.3);
+        transform: translateY(-2px);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. TATA LETAK ISI PAPAN TULIS ---
-st.markdown('<div class="main-board">', unsafe_allow_html=True)
+# --- 3. HEADER APLIKASI ---
+st.markdown("<h1 class='judul-hijau' style='text-align: center; font-size: 45px;'>♻️ AI PENDETEKSI SAMPAH</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #555; font-size: 18px;'>Proyek Inovasi Digital - Kelompok 3 Business Management BINUS</p>", unsafe_allow_html=True)
+st.markdown("<hr style='border: 1px solid #c8e6c9; margin-bottom: 30px;'>", unsafe_allow_html=True)
 
-# Header
-st.markdown("<h1 style='text-align: center; font-size: 55px;'>✏️ PENDETEKSI SAMPAH BINUS</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-size: 22px;'>Tugas Kelompok 3 - Business Management</p>", unsafe_allow_html=True)
-st.divider()
+# --- 4. TATA LETAK UTAMA (2 KOLOM) ---
+kol_kiri, kol_kanan = st.columns([1, 1])
 
-# Grid 3 Kolom (Mirip Gambar Referensi)
-kol_upload, kol_polaroid, kol_hasil = st.columns([1, 1.2, 1])
-
-with kol_upload:
-    st.markdown("### 📷 LANGKAH 1")
-    st.write("Silakan unggah atau pilih dari galeri:")
+with kol_kiri:
+    # Membungkus bagian kiri dengan kartu putih
+    st.markdown('<div class="kartu-modern">', unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #2e7d32; margin-bottom: 20px;'>📤 Langkah 1: Unggah Foto</h3>", unsafe_allow_html=True)
+    st.write("Masukkan foto sampah yang ingin dipilah (JPG, PNG, HEIC).")
+    
     foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic"])
-    if foto:
-        st.write(f"📁 Terdeteksi: {foto.name}")
-        st.write("")
-        tombol = st.button("🚀 MULAI KLASIFIKASI")
-
-with kol_polaroid:
+    
     if foto:
         img = Image.open(foto).convert('RGB')
-        st.markdown('<div class="polaroid">', unsafe_allow_html=True)
-        st.image(img, use_container_width=True)
-        st.write("📌 Foto Sampah Anda")
-        st.markdown('</div>', unsafe_allow_html=True)
-    else:
-        st.info("Papan masih kosong, ayo tempel foto sampahmu!")
+        st.image(img, use_container_width=True, caption="Foto siap dianalisis")
+        st.write("")
+        tombol = st.button("🔍 KLASIFIKASI SEKARANG")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-with kol_hasil:
-    st.markdown("### 💡 LANGKAH 2")
+with kol_kanan:
+    # Membungkus bagian kanan dengan kartu putih
+    st.markdown('<div class="kartu-modern">', unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #2e7d32; margin-bottom: 20px;'>📊 Langkah 2: Hasil Analisis</h3>", unsafe_allow_html=True)
+    
     if foto and 'tombol' in locals() and tombol:
-        # AI Berpikir
-        img_res = img.resize((180, 180))
-        arr = tf.keras.utils.img_to_array(img_res)
-        arr = tf.expand_dims(arr, 0)
-        pred = model.predict(arr, verbose=0)
-        hasil = np.argmax(tf.nn.softmax(pred[0]))
+        with st.spinner('AI sedang menganalisis gambar...'):
+            img_res = img.resize((180, 180))
+            arr = tf.keras.utils.img_to_array(img_res)
+            arr = tf.expand_dims(arr, 0)
+            pred = model.predict(arr, verbose=0)
+            hasil = np.argmax(tf.nn.softmax(pred[0]))
         
-        st.markdown("#### SAMPAH ANDA ADALAH:")
+        st.markdown("#### Kategori Sampah Anda:")
         if hasil == 0:
             st.success("## 🍃 ORGANIK")
-            st.markdown("""
-                <div class='sticky-note'>
-                **Panduan Cepat:**<br>
-                ✅ Kompos<br>
-                ✅ Sisa Sayur<br>
-                ✅ Mudah Membusuk
-                </div>
-            """, unsafe_allow_html=True)
+            st.write("**Tindakan:** Masukkan ke tempat sampah **HIJAU**.")
+            st.write("Sampah ini berasal dari sisa makhluk hidup (seperti daun, sisa makanan) dan dapat diolah menjadi kompos.")
         else:
-            st.info("## ♻️ ANORGANIK")
-            st.markdown("""
-                <div class='sticky-note'>
-                **Panduan Cepat:**<br>
-                ✅ Daur ulang Plastik<br>
-                ✅ Kertas & Botol<br>
-                ✅ Sulit Hancur
-                </div>
-            """, unsafe_allow_html=True)
+            st.warning("## ♻️ ANORGANIK")
+            st.write("**Tindakan:** Masukkan ke tempat sampah **KUNING/BIRU**.")
+            st.write("Sampah buatan (seperti plastik, kaca, kemasan) yang sulit terurai secara alami dan perlu dikirim ke bank sampah untuk didaur ulang.")
     else:
-        st.write("Hasil pemilahan akan muncul di sini...")
+        st.info("👋 Menunggu foto... Silakan unggah foto di sebelah kiri, lalu tekan tombol klasifikasi.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown("<p style='text-align: right; color: #f5f5f5 !important; font-family: Architects Daughter;'>© 2026 Kelompok 3 Binus</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #aaa; margin-top: 40px;'>© 2026 Kelompok 3 Binus University - Character Building</p>", unsafe_allow_html=True)
