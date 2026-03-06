@@ -46,7 +46,8 @@ kiri, kanan = st.columns([1.5, 1])
 with kiri:
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.subheader("📁 LANGKAH 1: UNGGAH")
-    foto = st.file_uploader("Pilih gambar sampah (JPG/PNG)", type=["jpg", "png", "jpeg"])
+    # Menambahkan .webp dan .jfif agar lebih banyak foto yang bisa masuk
+foto = st.file_uploader("Pilih gambar sampah", type=["jpg", "png", "jpeg", "webp", "jfif"])
     if foto:
         img = Image.open(foto).convert('RGB')
         st.image(img, use_container_width=True)
