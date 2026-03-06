@@ -6,122 +6,145 @@ import os
 import gdown
 from pillow_heif import register_heif_opener
 
-# Aktifkan fitur pembaca foto iPhone (.HEIC)
+# Aktifkan pembaca foto iPhone
 register_heif_opener()
 
-# --- 1. BAGIAN RAHASIA: AMBIL OTAK AI DARI DRIVE ---
+# --- 1. KONEKSI KE OTAK AI ---
 @st.cache_resource
 def download_dan_muat_model():
     id_drive = '1AbjMsB3EZr5wRamQmdLNUjbUGaYpvOEt' 
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v2.h5'
     if not os.path.exists(nama_file):
-        with st.spinner('AI sedang menyiapkan kapur dan papan tulis...'):
+        with st.spinner('Menyiapkan Papan Tulis...'):
             gdown.download(url, nama_file, quiet=False)
     return tf.keras.models.load_model(nama_file)
 
 model = download_dan_muat_model()
 
-# --- 2. KODE DESAIN "PAPAN TULIS BINUS" (CSS CUSTOM) ---
+# --- 2. DESAIN UI PAPAN TULIS (CSS TINGKAT LANJUT) ---
 st.set_page_config(page_title="Binus Trash AI", layout="wide")
 
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet">
     <style>
-    /* Mengubah latar belakang menjadi motif kayu */
+    /* Latar belakang Meja Kayu */
     .stApp {
-        background-color: #d2b48c;
         background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+        background-color: #5d4037;
     }
     
-    /* Membuat gaya Papan Tulis Hijau */
-    .board {
+    /* Papan Tulis Utama */
+    .main-board {
         background-color: #2e4d3d;
-        border: 12px solid #5d4037;
-        border-radius: 15px;
-        padding: 25px;
-        color: white;
+        border: 15px solid #3e2723;
+        border-radius: 10px;
+        padding: 40px;
+        box-shadow: 20px 20px 50px rgba(0,0,0,0.6);
         font-family: 'Architects Daughter', cursive;
-        box-shadow: 15px 15px 30px rgba(0,0,0,0.4);
-        margin-bottom: 20px;
+        color: white;
     }
 
-    /* Gaya Bingkai Polaroid untuk Foto */
+    /* Bingkai Polaroid untuk Foto */
     .polaroid {
         background: white;
-        padding: 10px 10px 30px 10px;
-        box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
-        transform: rotate(-2deg);
-        display: inline-block;
+        padding: 15px 15px 40px 15px;
+        box-shadow: 10px 10px 20px rgba(0,0,0,0.4);
+        transform: rotate(-1deg);
         color: #333;
         text-align: center;
         border-radius: 2px;
+        margin: 10px;
     }
 
-    /* Mengatur tulisan agar mirip kapur tulis */
-    h1, h2, h3, p {
-        color: #f5f5f5 !important;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    }
-    
-    /* Gaya tombol agar terlihat seperti label tempel */
+    /* Tombol Bergaya Klasik */
     div.stButton > button {
-        background-color: #fcf5e5;
+        background-color: #f5f5dc;
         color: #5d4037;
-        border-radius: 5px;
+        border-radius: 10px;
         font-weight: bold;
-        border: 2px solid #5d4037;
+        border: 2px solid #3e2723;
+        font-family: 'Architects Daughter', cursive;
+        font-size: 18px;
+        width: 100%;
+    }
+
+    /* Sticker Notulensi di Pojok */
+    .sticky-note {
+        background-color: #fff9c4;
+        color: #333;
+        padding: 15px;
+        border-radius: 2px;
+        transform: rotate(2deg);
+        box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
         font-family: 'Architects Daughter', cursive;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. TAMPILAN UTAMA ---
-st.markdown("<h1 style='text-align: center; font-size: 50px;'>✏️ PENDETEKSI SAMPAH BINUS</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-size: 20px;'>Tugas Kelompok 3 - Business Management</p>", unsafe_allow_html=True)
+# --- 3. TATA LETAK ISI PAPAN TULIS ---
+st.markdown('<div class="main-board">', unsafe_allow_html=True)
+
+# Header
+st.markdown("<h1 style='text-align: center; font-size: 55px;'>✏️ PENDETEKSI SAMPAH BINUS</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size: 22px;'>Tugas Kelompok 3 - Business Management</p>", unsafe_allow_html=True)
 st.divider()
 
-# Membagi layar menjadi dua papan tulis
-kiri, kanan = st.columns(2)
+# Grid 3 Kolom (Mirip Gambar Referensi)
+kol_upload, kol_polaroid, kol_hasil = st.columns([1, 1.2, 1])
 
-with kiri:
-    st.markdown('<div class="board">', unsafe_allow_html=True)
-    st.subheader("📷 LANGKAH 1: UNGGAH GAMBAR")
-    st.write("Silakan pilih atau tarik foto sampahmu ke sini:")
+with kol_upload:
+    st.markdown("### 📷 LANGKAH 1")
+    st.write("Silakan unggah atau pilih dari galeri:")
     foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic"])
-    
     if foto:
-        img = Image.open(foto).convert('RGB')
-        # Menampilkan foto dengan gaya polaroid
-        st.markdown('<div class="polaroid">', unsafe_allow_html=True)
-        st.image(img, use_container_width=True)
-        st.write(f"📁 {foto.name}")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.write(f"📁 Terdeteksi: {foto.name}")
         st.write("")
         tombol = st.button("🚀 MULAI KLASIFIKASI")
-    st.markdown('</div>', unsafe_allow_html=True)
 
-with kanan:
-    st.markdown('<div class="board">', unsafe_allow_html=True)
-    st.subheader("💡 LANGKAH 2: HASIL PEMILAHAN")
-    
+with kol_polaroid:
+    if foto:
+        img = Image.open(foto).convert('RGB')
+        st.markdown('<div class="polaroid">', unsafe_allow_html=True)
+        st.image(img, use_container_width=True)
+        st.write("📌 Foto Sampah Anda")
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.info("Papan masih kosong, ayo tempel foto sampahmu!")
+
+with kol_hasil:
+    st.markdown("### 💡 LANGKAH 2")
     if foto and 'tombol' in locals() and tombol:
-        # Proses AI menebak
+        # AI Berpikir
         img_res = img.resize((180, 180))
         arr = tf.keras.utils.img_to_array(img_res)
         arr = tf.expand_dims(arr, 0)
         pred = model.predict(arr, verbose=0)
         hasil = np.argmax(tf.nn.softmax(pred[0]))
         
-        st.markdown("### SAMPAH ANDA ADALAH:")
+        st.markdown("#### SAMPAH ANDA ADALAH:")
         if hasil == 0:
             st.success("## 🍃 ORGANIK")
-            st.write("Ini adalah sampah alami yang dapat terurai secara biologis (mudah membusuk).")
+            st.markdown("""
+                <div class='sticky-note'>
+                **Panduan Cepat:**<br>
+                ✅ Kompos<br>
+                ✅ Sisa Sayur<br>
+                ✅ Mudah Membusuk
+                </div>
+            """, unsafe_allow_html=True)
         else:
             st.info("## ♻️ ANORGANIK")
-            st.write("Ini adalah sampah buatan yang sulit hancur dan butuh didaur ulang.")
+            st.markdown("""
+                <div class='sticky-note'>
+                **Panduan Cepat:**<br>
+                ✅ Daur ulang Plastik<br>
+                ✅ Kertas & Botol<br>
+                ✅ Sulit Hancur
+                </div>
+            """, unsafe_allow_html=True)
     else:
-        st.write("Ayo masukkan foto di sebelah kiri untuk melihat hasilnya di sini!")
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.write("Hasil pemilahan akan muncul di sini...")
 
-st.markdown("<p style='text-align: center; color: #5d4037 !important;'>© 2026 Kelompok 3 Binus - Citizenship Project</p>", unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("<p style='text-align: right; color: #f5f5f5 !important; font-family: Architects Daughter;'>© 2026 Kelompok 3 Binus</p>", unsafe_allow_html=True)
