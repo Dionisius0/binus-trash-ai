@@ -16,87 +16,90 @@ def download_dan_muat_model():
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v2.h5'
     if not os.path.exists(nama_file):
-        with st.spinner('Menyiapkan Sistem AI...'):
+        with st.spinner('Menulis di Papan Tulis... (Menyiapkan AI)'):
             gdown.download(url, nama_file, quiet=False)
     return tf.keras.models.load_model(nama_file)
 
 model = download_dan_muat_model()
 
-# --- 2. DESAIN UI "MODERN GO-GREEN" ---
-st.set_page_config(page_title="Binus Trash AI", page_icon="♻️", layout="wide")
+# --- 2. DESAIN UI PAPAN TULIS (ANTI BOCOR & TERBACA JELAS) ---
+st.set_page_config(page_title="Binus Trash AI", page_icon="✏️", layout="wide")
 
 st.markdown("""
     <style>
-    /* Warna latar belakang aplikasi yang bersih (Light Mint) */
+    /* Mengubah seluruh background menjadi Papan Tulis Hijau Tua */
     .stApp {
-        background-color: #f2fcf5; 
+        background-color: #244230 !important;
+        background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 4px) !important;
     }
     
-    /* Desain Kartu Modern (Putih dengan bayangan halus) */
-    .kartu-modern {
-        background-color: #ffffff;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        border-top: 5px solid #2e7d32; /* Garis hijau elegan di atas */
-        margin-bottom: 20px;
+    /* Memaksa semua teks menjadi warna putih kapur agar TERLIHAT JELAS */
+    html, body, [class*="css"], p, span, div, label {
+        font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif !important;
+        color: #f8f9fa !important;
+    }
+    
+    /* Teks judul menggunakan warna kapur kuning/putih */
+    h1, h2, h3, h4 {
+        color: #ffc107 !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.4) !important;
+        font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif !important;
     }
 
-    /* Teks Judul Utama */
-    .judul-hijau {
-        color: #1b5e20;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-weight: 800;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    /* Desain area upload agar terlihat seperti kotak garis kapur */
+    [data-testid="stFileUploadDropzone"] {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 3px dashed #ffc107 !important;
+        border-radius: 15px !important;
     }
 
-    /* Desain Tombol Start-up */
-    div.stButton > button {
-        background-color: #2e7d32;
-        color: white;
-        border-radius: 8px;
-        font-weight: bold;
-        border: none;
-        padding: 12px 24px;
-        transition: all 0.3s ease 0s;
-        width: 100%;
-        font-size: 16px;
+    /* Desain tombol seperti penghapus papan tulis atau kayu */
+    [data-testid="baseButton-secondary"] {
+        background-color: #f8f9fa !important;
+        color: #244230 !important;
+        border: 4px solid #5d4037 !important;
+        border-radius: 8px !important;
+        font-weight: bold !important;
+        font-size: 18px !important;
+        padding: 10px 20px !important;
+        box-shadow: 3px 3px 5px rgba(0,0,0,0.4) !important;
+        transition: 0.3s;
     }
-    div.stButton > button:hover {
-        background-color: #1b5e20;
-        box-shadow: 0px 8px 15px rgba(46, 125, 50, 0.3);
-        transform: translateY(-2px);
+    
+    [data-testid="baseButton-secondary"]:hover {
+        background-color: #ffc107 !important;
+        color: #000000 !important;
+        transform: scale(1.02);
+    }
+
+    /* Warna kotak pesan hasil agar menonjol */
+    [data-testid="stNotification"] {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border-left: 5px solid #ffc107 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. HEADER APLIKASI ---
-st.markdown("<h1 class='judul-hijau' style='text-align: center; font-size: 45px;'>♻️ AI PENDETEKSI SAMPAH</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #555; font-size: 18px;'>Proyek Inovasi Digital - Kelompok 3 Business Management BINUS</p>", unsafe_allow_html=True)
-st.markdown("<hr style='border: 1px solid #c8e6c9; margin-bottom: 30px;'>", unsafe_allow_html=True)
+# --- 3. ISI KONTEN PAPAN TULIS ---
+st.markdown("<h1 style='text-align: center; font-size: 50px;'>✏️ PENDETEKSI SAMPAH BINUS</h1>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align: center; color: white;'>Karya Kelompok 3 - Business Management</h4>", unsafe_allow_html=True)
+st.divider()
 
-# --- 4. TATA LETAK UTAMA (2 KOLOM) ---
 kol_kiri, kol_kanan = st.columns([1, 1])
 
 with kol_kiri:
-    # Membungkus bagian kiri dengan kartu putih
-    st.markdown('<div class="kartu-modern">', unsafe_allow_html=True)
-    st.markdown("<h3 style='color: #2e7d32; margin-bottom: 20px;'>📤 Langkah 1: Unggah Foto</h3>", unsafe_allow_html=True)
-    st.write("Masukkan foto sampah yang ingin dipilah (JPG, PNG, HEIC).")
-    
+    st.subheader("📌 Langkah 1: Unggah Foto")
+    st.write("Tempelkan foto sampahmu di papan ini (JPG, PNG, HEIC):")
     foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic"])
     
     if foto:
         img = Image.open(foto).convert('RGB')
-        st.image(img, use_container_width=True, caption="Foto siap dianalisis")
-        st.write("")
-        tombol = st.button("🔍 KLASIFIKASI SEKARANG")
-    st.markdown('</div>', unsafe_allow_html=True)
+        # Menampilkan foto dengan border putih ala foto cetak
+        st.image(img, use_container_width=True)
+        tombol = st.button("🚀 MULAI PEMILAHAN", use_container_width=True)
 
 with kol_kanan:
-    # Membungkus bagian kanan dengan kartu putih
-    st.markdown('<div class="kartu-modern">', unsafe_allow_html=True)
-    st.markdown("<h3 style='color: #2e7d32; margin-bottom: 20px;'>📊 Langkah 2: Hasil Analisis</h3>", unsafe_allow_html=True)
+    st.subheader("💡 Langkah 2: Hasil Analisis")
     
     if foto and 'tombol' in locals() and tombol:
         with st.spinner('AI sedang menganalisis gambar...'):
@@ -106,17 +109,16 @@ with kol_kanan:
             pred = model.predict(arr, verbose=0)
             hasil = np.argmax(tf.nn.softmax(pred[0]))
         
-        st.markdown("#### Kategori Sampah Anda:")
+        st.write("### KESIMPULAN:")
         if hasil == 0:
             st.success("## 🍃 ORGANIK")
-            st.write("**Tindakan:** Masukkan ke tempat sampah **HIJAU**.")
-            st.write("Sampah ini berasal dari sisa makhluk hidup (seperti daun, sisa makanan) dan dapat diolah menjadi kompos.")
+            st.write("**Panduan:** Sampah alami yang dapat terurai secara biologis (mudah membusuk).")
+            st.write("👉 Arahkan ke tempat sampah **HIJAU** (Kompos/Sisa Makanan).")
         else:
-            st.warning("## ♻️ ANORGANIK")
-            st.write("**Tindakan:** Masukkan ke tempat sampah **KUNING/BIRU**.")
-            st.write("Sampah buatan (seperti plastik, kaca, kemasan) yang sulit terurai secara alami dan perlu dikirim ke bank sampah untuk didaur ulang.")
+            st.info("## ♻️ ANORGANIK")
+            st.write("**Panduan:** Sampah buatan yang sulit hancur dan perlu didaur ulang.")
+            st.write("👉 Arahkan ke tempat sampah **KUNING/BIRU** (Plastik/Kertas/Kaca).")
     else:
-        st.info("👋 Menunggu foto... Silakan unggah foto di sebelah kiri, lalu tekan tombol klasifikasi.")
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.write("👈 Menunggu foto... Silakan unggah foto di sebelah kiri, lalu tekan tombol.")
 
-st.markdown("<p style='text-align: center; color: #aaa; margin-top: 40px;'>© 2026 Kelompok 3 Binus University - Character Building</p>", unsafe_allow_html=True)
+st.markdown("<br><hr><center><p>© 2026 Kelompok 3 Binus University - Citizenship Project</p></center>", unsafe_allow_html=True)
