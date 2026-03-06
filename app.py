@@ -8,22 +8,19 @@ import gdown
 # --- BAGIAN RAHASIA: MENJEMPUT OTAK AI DARI DRIVE ---
 @st.cache_resource
 def download_dan_muat_model():
-    # GANTI TULISAN DI BAWAH INI DENGAN ID FILE DRIVE KAMU
     id_drive = '1AbjMsB3EZr5wRamQmdLNUjbUGaYpvOEt' 
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v2.h5'
     
-    # Perintah untuk mendownload jika file belum ada di server
     if not os.path.exists(nama_file):
         with st.spinner('Sabar ya, AI sedang menjemput otaknya dari Drive...'):
             gdown.download(url, nama_file, quiet=False)
     
     return tf.keras.models.load_model(nama_file)
 
-# Memulai proses pemuatan
 model = download_dan_muat_model()
 
-# --- TAMPILAN MEWAH (MODERN DARK GREEN) ---
+# --- TAMPILAN MEWAH ---
 st.set_page_config(page_title="Binus Trash AI", layout="wide")
 st.markdown("""
     <style>
@@ -46,8 +43,8 @@ kiri, kanan = st.columns([1.5, 1])
 with kiri:
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.subheader("📁 LANGKAH 1: UNGGAH")
-    # Menambahkan .webp dan .jfif agar lebih banyak foto yang bisa masuk
-foto = st.file_uploader("Pilih gambar sampah", type=["jpg", "png", "jpeg", "webp", "jfif"])
+    # Izin masuk untuk format foto sudah ditambah di bawah ini
+    foto = st.file_uploader("Pilih gambar sampah", type=["jpg", "png", "jpeg", "webp", "jfif"])
     if foto:
         img = Image.open(foto).convert('RGB')
         st.image(img, use_container_width=True)
@@ -58,7 +55,6 @@ with kanan:
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.subheader("HASIL KLASIFIKASI")
     if foto and 'tombol' in locals() and tombol:
-        # Proses AI menebak
         img_res = img.resize((180, 180))
         arr = tf.keras.utils.img_to_array(img_res)
         arr = tf.expand_dims(arr, 0)
@@ -67,10 +63,8 @@ with kanan:
         
         if hasil == 0:
             st.success("### 🍃 HASIL: ORGANIK")
-            st.write("Ini adalah sampah alami yang bisa membusuk.")
         else:
             st.info("### ♻️ HASIL: ANORGANIK")
-            st.write("Ini adalah sampah buatan yang sulit hancur.")
     else:
         st.write("Menunggu gambar diunggah...")
     st.markdown('</div>', unsafe_allow_html=True)
