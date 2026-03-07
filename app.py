@@ -5,7 +5,7 @@ import numpy as np
 import os
 import gdown
 import matplotlib.cm as cm
-import random # Alat baru untuk mengacak ide bisnis
+import random 
 from pillow_heif import register_heif_opener
 
 register_heif_opener()
@@ -33,7 +33,7 @@ def buat_xray_kontur(img_asli):
     colored_edges = np.uint8(colored_edges * 255)
     return Image.fromarray(colored_edges).convert("RGB")
 
-# --- 3. DATABASE IDE BISNIS (FITUR BARU) ---
+# --- 3. DATABASE IDE BISNIS ---
 ide_organik = [
     {"ide": "🌱 Pupuk Kompos Cair", "modal": "Rp 50.000 (Beli EM4 & Ember)", "jual": "Rp 25.000 / botol", "target": "Pecinta tanaman hias & petani lokal."},
     {"ide": "🐛 Budidaya Maggot BSF", "modal": "Rp 100.000 (Kandang mini)", "jual": "Rp 50.000 / kg", "target": "Peternak ayam & ikan lele."},
@@ -84,7 +84,6 @@ st.markdown("""
     /* Desain Sticky Note untuk Proposal Bisnis */
     .business-note {
         background-color: #FFF9C4 !important;
-        color: #3E2723 !important;
         padding: 20px !important;
         border-radius: 2px !important;
         transform: rotate(1deg);
@@ -93,7 +92,8 @@ st.markdown("""
         margin-top: 20px;
         margin-bottom: 20px;
     }
-    .business-note h3, .business-note p, .business-note li {
+    /* PERBAIKAN WARNA TEKS BENTROK: Memaksa semua elemen di dalam note jadi cokelat tua pekat */
+    .business-note, .business-note h3, .business-note p, .business-note ul, .business-note li, .business-note b {
         color: #3E2723 !important;
         text-shadow: none !important;
         font-family: 'Caveat', cursive !important;
@@ -139,15 +139,13 @@ with kol_kanan:
             
             img_xray = buat_xray_kontur(img_asli)
             
-            # --- BAGIAN HASIL & PROPOSAL BISNIS ---
             if hasil == 0:
                 st.markdown("<h1 style='color: #98FB98 !important; font-size: 50px;'>➡️ 🗑️ ORGANIK 🍃</h1>", unsafe_allow_html=True)
-                bisnis = random.choice(ide_organik) # Mengacak ide organik
+                bisnis = random.choice(ide_organik) 
             else:
                 st.markdown("<h1 style='color: #D3D3D3 !important; font-size: 50px;'>➡️ 🗑️ ANORGANIK ⚙️</h1>", unsafe_allow_html=True)
-                bisnis = random.choice(ide_anorganik) # Mengacak ide anorganik
+                bisnis = random.choice(ide_anorganik) 
             
-            # Menampilkan Proposal Bisnis Mini di atas Kertas Kuning (Sticky Note)
             st.markdown(f"""
                 <div class="business-note">
                     <h3>💡 Peluang Bisnis Daur Ulang:</h3>
@@ -168,7 +166,6 @@ with kol_kanan:
     else:
         st.write("👈 Upload foto di sebelah kiri untuk melihat hasil, ide bisnis, dan Sinar-X di sini.")
         
-    # --- PANDUAN DASAR SELALU MUNCUL ---
     st.markdown("<br><hr style='border: 1px dashed white;'>", unsafe_allow_html=True)
     st.markdown("### **PANDUAN DASAR:**")
     st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
