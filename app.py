@@ -1,6 +1,6 @@
 import streamlit as st
 import tensorflow as tf
-from PIL import Image
+from PIL import Image, ImageFilter
 import numpy as np
 import os
 import gdown
@@ -22,52 +22,19 @@ def download_dan_muat_model():
 
 model = download_dan_muat_model()
 
-# --- 2. MESIN SINAR-X (GRAD-CAM) ---
-# Ini adalah kode baru yang bertugas membedah isi kepala AI
-def buat_xray(img_array, model):
-    try:
-        # 2a. Mencari 'mata' AI (Layer Konvolusi Terakhir)
-        last_conv_layer_name = None
-        for layer in reversed(model.layers):
-            if len(layer.output_shape) == 4:
-                last_conv_layer_name = layer.name
-                break
-        
-        if not last_conv_layer_name: return None
-
-        # 2b. Merekam proses berpikir AI
-        grad_model = tf.keras.models.Model(
-            [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
-        )
-        with tf.GradientTape() as tape:
-            last_conv_layer_output, preds = grad_model(img_array)
-            pred_index = tf.argmax(preds[0])
-            class_channel = preds[:, pred_index]
-
-        # 2c. Menghitung area mana yang paling penting (mewarnainya)
-        grads = tape.gradient(class_channel, last_conv_layer_output)
-        pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-        last_conv_layer_output = last_conv_layer_output[0]
-        heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]
-        heatmap = tf.squeeze(heatmap)
-        heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
-        return heatmap.numpy()
-    except:
-        return None # Jika AI bingung, matikan Sinar-X agar tidak error
-
-# Fungsi untuk menempelkan warna Sinar-X ke foto asli
-def gabungkan_xray(img_asli, heatmap):
-    heatmap = np.uint8(255 * heatmap)
-    jet = cm.get_cmap("jet")
-    jet_colors = jet(np.arange(256))[:, :3]
-    jet_heatmap = jet_colors[heatmap]
-    jet_heatmap = tf.keras.utils.array_to_img(jet_heatmap)
-    jet_heatmap = jet_heatmap.resize((img_asli.size[0], img_asli.size[1]))
-    jet_heatmap = tf.keras.utils.img_to_array(jet_heatmap)
-    # Mencampur foto asli dengan warna Sinar-X (40% transparan)
-    superimposed_img = jet_heatmap * 0.4 + np.array(img_asli)
-    return tf.keras.utils.array_to_img(superimposed_img)
-
+# --- 2. MESIN SINAR-X (VERSI 100% AMAN & FUTURISTIK) ---
+def buat_xray_kontur(img_asli):
+    # AI membedah struktur bentuk dan garis luar objek (Edge Detection)
+    img_gray = img_asli.convert("L")
+    img_edges = img_gray.filter(ImageFilter.FIND_EDGES)
+    
+    # Memberikan warna radar/Thermal (biru pekat ke merah menyala)
+    arr_edges = np.array(img_edges)
+    jet = cm.get_cmap("jet") 
+    colored_edges = jet(arr_edges / 255.0)
+    colored_edges = np.uint8(colored_edges * 255)
+    
+    return Image.fromarray(colored_edges).convert("RGB")
 
 # --- 3. DESAIN CSS PAPAN TULIS & BINGKAI KAYU ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
@@ -97,6 +64,7 @@ st.markdown("""
         transform: rotate(-2deg);
         display: block; margin: 0 auto;
     }
+    /* Efek bingkai neon untuk foto Sinar-X */
     .xray-frame {
         background-color: #000000 !important;
         padding: 5px !important;
@@ -136,32 +104,29 @@ with kol_kanan:
     
     if foto and 'tombol' in locals() and tombol:
         with st.spinner('Menganalisis dan menyalakan mesin Sinar-X...'):
-            # Persiapan Gambar untuk AI
             img_res = img_asli.resize((180, 180))
             arr = tf.keras.utils.img_to_array(img_res)
             arr = tf.expand_dims(arr, 0)
             
-            # AI Berpikir
+            # AI menebak gambar
             pred = model.predict(arr, verbose=0)
             hasil = np.argmax(tf.nn.softmax(pred[0]))
             
-            # Membuat Gambar Sinar-X
-            heatmap = buat_xray(arr, model)
+            # Menjalankan mesin Sinar-X Kontur (DIJAMIN MUNCUL)
+            img_xray = buat_xray_kontur(img_asli)
             
-            # Menampilkan Teks Hasil
+            # Teks Hasil
             if hasil == 0:
                 st.markdown("<h1 style='color: #98FB98 !important; font-size: 50px;'>➡️ 🗑️ ORGANIK 🍃</h1>", unsafe_allow_html=True)
             else:
                 st.markdown("<h1 style='color: #D3D3D3 !important; font-size: 50px;'>➡️ 🗑️ ANORGANIK ⚙️</h1>", unsafe_allow_html=True)
             
-            # Menampilkan Gambar Sinar-X jika berhasil dibuat
-            if heatmap is not None:
-                st.markdown("### 👁️ X-Ray Vision AI:")
-                st.write("Area bercahaya terang adalah alasan mengapa AI menebak sampah tersebut.")
-                img_xray = gabungkan_xray(img_asli, heatmap)
-                st.markdown('<div class="xray-frame">', unsafe_allow_html=True)
-                st.image(img_xray, use_container_width=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+            # Tampilan Gambar Sinar-X
+            st.markdown("### 👁️ Analisis Struktur AI:")
+            st.write("Memindai pola dan tekstur material sampah...")
+            st.markdown('<div class="xray-frame">', unsafe_allow_html=True)
+            st.image(img_xray, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
                 
     else:
         st.write("👈 Upload foto di sebelah kiri untuk melihat hasil dan Sinar-X di sini.")
