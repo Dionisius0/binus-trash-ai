@@ -81,7 +81,6 @@ st.markdown("""
         box-shadow: 0px 0px 15px #00FF00 !important;
         border-radius: 5px !important;
     }
-    /* Desain Sticky Note untuk Proposal Bisnis */
     .business-note {
         background-color: #FFF9C4 !important;
         padding: 20px !important;
@@ -92,11 +91,10 @@ st.markdown("""
         margin-top: 20px;
         margin-bottom: 20px;
     }
-    /* PERBAIKAN WARNA TEKS BENTROK: Memaksa semua elemen di dalam note jadi cokelat tua pekat */
-    .business-note, .business-note h3, .business-note p, .business-note ul, .business-note li, .business-note b {
+    /* Memaksa elemen di dalam note jadi cokelat tua */
+    div.business-note * {
         color: #3E2723 !important;
         text-shadow: none !important;
-        font-family: 'Caveat', cursive !important;
     }
     [data-testid="stFileUploadDropzone"] { background-color: transparent !important; border: 2px dashed #F8F8FF !important; }
     [data-testid="baseButton-secondary"] {
@@ -146,14 +144,15 @@ with kol_kanan:
                 st.markdown("<h1 style='color: #D3D3D3 !important; font-size: 50px;'>➡️ 🗑️ ANORGANIK ⚙️</h1>", unsafe_allow_html=True)
                 bisnis = random.choice(ide_anorganik) 
             
+            # --- PERBAIKAN WARNA TEKS JALUR KERAS (INLINE STYLES) ---
             st.markdown(f"""
                 <div class="business-note">
-                    <h3>💡 Peluang Bisnis Daur Ulang:</h3>
-                    <p style="font-size: 24px; font-weight: bold;">{bisnis['ide']}</p>
-                    <ul>
-                        <li><b>Estimasi Modal:</b> {bisnis['modal']}</li>
-                        <li><b>Potensi Harga Jual:</b> {bisnis['jual']}</li>
-                        <li><b>Target Pasar:</b> {bisnis['target']}</li>
+                    <h3 style="color: #3E2723 !important;">💡 Peluang Bisnis Daur Ulang:</h3>
+                    <p style="font-size: 24px; font-weight: bold; color: #3E2723 !important;">{bisnis['ide']}</p>
+                    <ul style="color: #3E2723 !important;">
+                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Estimasi Modal:</b> {bisnis['modal']}</li>
+                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Potensi Harga Jual:</b> {bisnis['jual']}</li>
+                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Target Pasar:</b> {bisnis['target']}</li>
                     </ul>
                 </div>
             """, unsafe_allow_html=True)
