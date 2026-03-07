@@ -91,11 +91,30 @@ st.markdown("""
         margin-top: 20px;
         margin-bottom: 20px;
     }
-    /* Memaksa elemen di dalam note jadi cokelat tua */
-    div.business-note * {
-        color: #3E2723 !important;
-        text-shadow: none !important;
+    div.business-note * { color: #3E2723 !important; text-shadow: none !important; }
+    
+    /* FITUR BARU: Desain Tombol Google Maps */
+    .maps-btn {
+        background-color: #4CAF50 !important;
+        color: white !important;
+        padding: 12px 20px !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        display: block !important;
+        font-size: 22px !important;
+        font-family: 'Caveat', cursive !important;
+        border-radius: 10px !important;
+        border: 2px solid white !important;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important;
+        transition: 0.3s !important;
+        margin-top: 15px;
+        margin-bottom: 25px;
     }
+    .maps-btn:hover {
+        background-color: #45a049 !important;
+        transform: scale(1.02);
+    }
+    
     [data-testid="stFileUploadDropzone"] { background-color: transparent !important; border: 2px dashed #F8F8FF !important; }
     [data-testid="baseButton-secondary"] {
         background-color: transparent !important; color: #F8F8FF !important; border: 2px solid #F8F8FF !important; border-radius: 15px !important; font-size: 20px !important;
@@ -134,7 +153,6 @@ with kol_kanan:
             
             pred = model.predict(arr, verbose=0)
             hasil = np.argmax(tf.nn.softmax(pred[0]))
-            
             img_xray = buat_xray_kontur(img_asli)
             
             if hasil == 0:
@@ -144,7 +162,6 @@ with kol_kanan:
                 st.markdown("<h1 style='color: #D3D3D3 !important; font-size: 50px;'>➡️ 🗑️ ANORGANIK ⚙️</h1>", unsafe_allow_html=True)
                 bisnis = random.choice(ide_anorganik) 
             
-            # --- PERBAIKAN WARNA TEKS JALUR KERAS (INLINE STYLES) ---
             st.markdown(f"""
                 <div class="business-note">
                     <h3 style="color: #3E2723 !important;">💡 Peluang Bisnis Daur Ulang:</h3>
@@ -156,6 +173,15 @@ with kol_kanan:
                     </ul>
                 </div>
             """, unsafe_allow_html=True)
+
+            # --- FITUR BARU: TOMBOL RADAR GOOGLE MAPS ---
+            # Tombol ini hanya muncul jika sampah bernilai 1 (Anorganik)
+            if hasil != 0:
+                st.markdown("""
+                    <a href="https://www.google.com/maps/search/Bank+Sampah+Terdekat" target="_blank" class="maps-btn">
+                        📍 Buka Peta: Cari Bank Sampah Terdekat
+                    </a>
+                """, unsafe_allow_html=True)
             
             st.markdown("### 👁️ Analisis Struktur AI:")
             st.markdown('<div class="xray-frame">', unsafe_allow_html=True)
