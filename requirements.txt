@@ -4,3 +4,4 @@ pillow
 numpy
 gdown
 pillow-heif
+matplotlib
