@@ -48,13 +48,13 @@ ide_anorganik = [
 
 # FITUR BARU: Database Fakta Dampak Lingkungan
 dampak_organik = [
-    "🌍 Keren! Mengomposkan sampah ini mencegah timbulnya gas metana beracun di TPA.",
+    "🌍 Mengomposkan sampah ini mencegah timbulnya gas metana beracun di TPA.",
     "🌱 Sisa organik ini berpotensi menyuburkan 1 pot tanaman hias kesayanganmu.",
     "💧 Daur ulang sisa makanan membantu menjaga kelembapan tanah dan menghemat air lho!"
 ]
 
 dampak_anorganik = [
-    "🌍 Hebat! Mendaur ulang sampah plastik ini menghemat energi setara menyalakan lampu LED 3 jam!",
+    "🌍 Mendaur ulang sampah plastik ini menghemat energi setara menyalakan lampu LED 3 jam!",
     "♻️ Terima kasih! Kamu baru saja mencegah sampah sulit hancur ini mencemari lautan kita.",
     "🌳 Aksi daur ulangmu hari ini ikut membantu mengurangi jejak karbon di atmosfer bumi."
 ]
