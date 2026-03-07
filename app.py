@@ -22,18 +22,14 @@ def download_dan_muat_model():
 
 model = download_dan_muat_model()
 
-# --- 2. MESIN SINAR-X (VERSI 100% AMAN & FUTURISTIK) ---
+# --- 2. MESIN SINAR-X KONTUR ---
 def buat_xray_kontur(img_asli):
-    # AI membedah struktur bentuk dan garis luar objek (Edge Detection)
     img_gray = img_asli.convert("L")
     img_edges = img_gray.filter(ImageFilter.FIND_EDGES)
-    
-    # Memberikan warna radar/Thermal (biru pekat ke merah menyala)
     arr_edges = np.array(img_edges)
     jet = cm.get_cmap("jet") 
     colored_edges = jet(arr_edges / 255.0)
     colored_edges = np.uint8(colored_edges * 255)
-    
     return Image.fromarray(colored_edges).convert("RGB")
 
 # --- 3. DESAIN CSS PAPAN TULIS & BINGKAI KAYU ---
@@ -64,7 +60,6 @@ st.markdown("""
         transform: rotate(-2deg);
         display: block; margin: 0 auto;
     }
-    /* Efek bingkai neon untuk foto Sinar-X */
     .xray-frame {
         background-color: #000000 !important;
         padding: 5px !important;
@@ -108,20 +103,16 @@ with kol_kanan:
             arr = tf.keras.utils.img_to_array(img_res)
             arr = tf.expand_dims(arr, 0)
             
-            # AI menebak gambar
             pred = model.predict(arr, verbose=0)
             hasil = np.argmax(tf.nn.softmax(pred[0]))
             
-            # Menjalankan mesin Sinar-X Kontur (DIJAMIN MUNCUL)
             img_xray = buat_xray_kontur(img_asli)
             
-            # Teks Hasil
             if hasil == 0:
                 st.markdown("<h1 style='color: #98FB98 !important; font-size: 50px;'>➡️ 🗑️ ORGANIK 🍃</h1>", unsafe_allow_html=True)
             else:
                 st.markdown("<h1 style='color: #D3D3D3 !important; font-size: 50px;'>➡️ 🗑️ ANORGANIK ⚙️</h1>", unsafe_allow_html=True)
             
-            # Tampilan Gambar Sinar-X
             st.markdown("### 👁️ Analisis Struktur AI:")
             st.write("Memindai pola dan tekstur material sampah...")
             st.markdown('<div class="xray-frame">', unsafe_allow_html=True)
@@ -130,6 +121,8 @@ with kol_kanan:
                 
     else:
         st.write("👈 Upload foto di sebelah kiri untuk melihat hasil dan Sinar-X di sini.")
-        st.markdown("<br><hr style='border: 1px dashed white;'>", unsafe_allow_html=True)
-        st.markdown("### **PANDUAN DASAR:**")
-        st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
+        
+    # --- PANDUAN DASAR SEKARANG SELALU MUNCUL ---
+    st.markdown("<br><hr style='border: 1px dashed white;'>", unsafe_allow_html=True)
+    st.markdown("### **PANDUAN DASAR:**")
+    st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
