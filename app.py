@@ -13,11 +13,12 @@ register_heif_opener()
 # --- 1. KONEKSI KE OTAK AI ---
 @st.cache_resource
 def download_dan_muat_model():
+    # ID Drive sudah benar menggunakan milikmu
     id_drive = '1Trv1Itbr8YeTnkes4FF5CpNB5ApmcpK7' 
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v3.h5'
     if not os.path.exists(nama_file):
-        with st.spinner('Menyiapkan Kapur dan Papan Tulis...'):
+        with st.spinner('Menghapus coretan di papan tulis...'):
             gdown.download(url, nama_file, quiet=False)
     return tf.keras.models.load_model(nama_file)
 
@@ -33,188 +34,110 @@ def buat_xray_kontur(img_asli):
     colored_edges = np.uint8(colored_edges * 255)
     return Image.fromarray(colored_edges).convert("RGB")
 
-# --- 3. DATABASE IDE BISNIS & JEJAK KARBON ---
+# --- 3. DATABASE IDE BISNIS ---
 ide_organik = [
-    {"ide": "🌱 Pupuk Kompos Cair", "modal": "Rp 50.000 (Beli EM4 & Ember)", "jual": "Rp 25.000 / botol", "target": "Pecinta tanaman hias & petani lokal."},
-    {"ide": "🐛 Budidaya Maggot BSF", "modal": "Rp 100.000 (Kandang mini)", "jual": "Rp 50.000 / kg", "target": "Peternak ayam & ikan lele."},
-    {"ide": "🔥 Briket Bioarang", "modal": "Rp 150.000 (Alat cetak sederhana)", "jual": "Rp 15.000 / kg", "target": "Warung sate & restoran BBQ."}
+    {"ide": "🌱 Pupuk Kompos Cair", "modal": "Rp 50rb", "target": "Pecinta Tanaman"},
+    {"ide": "🐛 Budidaya Maggot", "modal": "Rp 100rb", "target": "Peternak Lokal"}
 ]
-
 ide_anorganik = [
-    {"ide": "🧱 Paving Block Eco-Brick", "modal": "Rp 20.000 (Semen campuran)", "jual": "Rp 15.000 / blok", "target": "Kontraktor perumahan ramah lingkungan."},
-    {"ide": "👜 Tas Anyaman Estetik", "modal": "Rp 15.000 (Gunting & benang)", "jual": "Rp 75.000 / pcs", "target": "Pasar fashion eco-friendly & turis."},
-    {"ide": "💡 Lampu Hias Botol Kaca", "modal": "Rp 35.000 (Lampu LED strip)", "jual": "Rp 120.000 / pcs", "target": "Kafe kekinian & dekorasi kamar."}
+    {"ide": "🧱 Paving Block Eco", "modal": "Rp 20rb", "target": "Kontraktor"},
+    {"ide": "👜 Tas Anyaman Estetik", "modal": "Rp 15rb", "target": "Pasar Fashion"}
 ]
 
-dampak_organik = [
-    "🌍 Keren! Mengomposkan sampah ini mencegah timbulnya gas metana beracun di TPA.",
-    "🌱 Sisa organik ini berpotensi menyuburkan 1 pot tanaman hias kesayanganmu.",
-    "💧 Daur ulang sisa makanan membantu menjaga kelembapan tanah dan menghemat air lho!"
-]
-
-dampak_anorganik = [
-    "🌍 Hebat! Mendaur ulang sampah plastik ini menghemat energi setara menyalakan lampu LED 3 jam!",
-    "♻️ Terima kasih! Kamu baru saja mencegah sampah sulit hancur ini mencemari lautan kita.",
-    "🌳 Aksi daur ulangmu hari ini ikut membantu mengurangi jejak karbon di atmosfer bumi."
-]
-
-# --- 4. DESAIN CSS PAPAN TULIS & BINGKAI KAYU ---
+# --- 4. DESAIN CSS PAPAN TULIS ANTI-LIGHT MODE ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
-    .stApp { background-color: #2c3e50 !important; }
+    
+    .stApp, [data-testid="stAppViewContainer"] { background-color: #1a252f !important; }
+    
     .block-container {
-        background-color: #2F4F4F !important; 
+        background-color: #2F4F4F !important;
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px) !important;
+        background-size: 30px 30px !important;
         border: 15px solid #5C4033 !important; 
         border-radius: 10px !important;
         padding: 40px !important;
-        box-shadow: 10px 10px 30px rgba(0,0,0,0.5) !important;
-        max-width: 1000px !important;
+        box-shadow: inset 0 0 80px rgba(0,0,0,0.8), 5px 5px 25px rgba(0,0,0,0.5) !important;
     }
-    html, body, [class*="css"], p, span, div, label, h1, h2, h3, h4 {
-        font-family: 'Caveat', 'Comic Sans MS', cursive !important;
-        color: #F8F8FF !important;
-        letter-spacing: 1px;
+
+    [data-testid="stFileUploadDropzone"] {
+        background-color: rgba(0,0,0,0.4) !important;
+        border: 2px dashed #F8F8FF !important;
     }
-    .polaroid-frame {
-        background-color: #F5F5DC !important;
-        padding: 10px 10px 35px 10px !important;
-        box-shadow: 3px 3px 15px rgba(0,0,0,0.6) !important;
-        border-radius: 2px !important;
-        transform: rotate(-2deg);
-        display: block; margin: 0 auto;
+
+    html, body, p, h1, h2, h3, li, span, label { 
+        font-family: 'Caveat', cursive !important; 
+        color: #F8F8FF !important; 
     }
-    .xray-frame {
-        background-color: #000000 !important;
-        padding: 5px !important;
-        border: 2px solid #00FF00 !important;
-        box-shadow: 0px 0px 15px #00FF00 !important;
-        border-radius: 5px !important;
-    }
-    .business-note {
-        background-color: #FFF9C4 !important;
-        padding: 20px !important;
-        border-radius: 2px !important;
-        transform: rotate(1deg);
-        box-shadow: 5px 5px 15px rgba(0,0,0,0.4) !important;
-        border-top: 15px solid #FFD54F !important;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    div.business-note * { color: #3E2723 !important; text-shadow: none !important; }
-    
-    .maps-btn {
-        background-color: #4CAF50 !important; color: white !important; padding: 12px 20px !important;
-        text-align: center !important; text-decoration: none !important; display: block !important;
-        font-size: 22px !important; font-family: 'Caveat', cursive !important; border-radius: 10px !important;
-        border: 2px solid white !important; box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important;
-        transition: 0.3s !important; margin-top: 15px; margin-bottom: 25px;
-    }
-    .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
-    
-    .eco-impact {
-        background-color: rgba(76, 175, 80, 0.1) !important;
-        border-left: 5px dashed #4CAF50 !important;
-        padding: 15px !important;
-        border-radius: 5px !important;
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-    
-    [data-testid="stFileUploadDropzone"] { background-color: transparent !important; border: 2px dashed #F8F8FF !important; }
-    [data-testid="baseButton-secondary"] { background-color: transparent !important; color: #F8F8FF !important; border: 2px solid #F8F8FF !important; border-radius: 15px !important; font-size: 20px !important; }
-    [data-testid="baseButton-secondary"]:hover { background-color: #F8F8FF !important; color: #2F4F4F !important; }
+    .polaroid { background: white; padding: 10px 10px 30px 10px; border-radius: 2px; transform: rotate(-1deg); box-shadow: 3px 3px 10px rgba(0,0,0,0.4); }
+    .business-note { background: #fff9c4; padding: 15px; border-radius: 2px; border-top: 10px solid #fbc02d; color: #333 !important; }
+    .business-note * { color: #333 !important; }
     </style>
 """, unsafe_allow_html=True)
 
 # --- 5. TATA LETAK ---
 st.markdown("<h1 style='text-align: center; font-size: 60px;'>DETEKTOR SAMPAH</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-size: 20px;'>Dibuat oleh: Kelompok 3 - Business Management 🎓</p>", unsafe_allow_html=True)
-st.markdown("<hr style='border: 1px solid rgba(255,255,255,0.2);'>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size: 20px;'>Kelompok 3 - Business Management B29 🎓</p>", unsafe_allow_html=True)
+st.write("---")
 
-kol_kiri, kol_kanan = st.columns(2)
+kiri, kanan = st.columns(2)
 
-with kol_kiri:
-    st.markdown("<h2 style='font-size: 35px;'>1. UNGGAH ☁️</h2>", unsafe_allow_html=True)
+with kiri:
+    st.markdown("### 1. UNGGAH FOTO ☁️")
     foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic", "JPG", "PNG", "JPEG"])
-    
     if foto:
         img_asli = Image.open(foto).convert('RGB')
-        st.markdown('<div class="polaroid-frame">', unsafe_allow_html=True)
+        st.markdown('<div class="polaroid">', unsafe_allow_html=True)
         st.image(img_asli, use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
         st.write("")
-        tombol = st.button("CEK SEKARANG ➜", use_container_width=True)
+        tombol = st.button("MULAI ANALISIS ➜", use_container_width=True)
 
-with kol_kanan:
-    st.markdown("<h2 style='font-size: 35px;'>2. HASIL 🎯</h2>", unsafe_allow_html=True)
-    
+with kanan:
+    st.markdown("### 2. HASIL ANALISIS 🎯")
     if foto and 'tombol' in locals() and tombol:
-        with st.spinner('Menganalisis pola dan menghitung jejak karbon...'):
+        with st.spinner('AI sedang memikir...'):
             img_res = img_asli.resize((150, 150))
             
-            # PERBAIKAN 1: WAJIB DIBAGI 255.0 AGAR MESIN TIDAK ERROR
-            arr = tf.keras.utils.img_to_array(img_res) / 255.0
+            # PENTING 1: Dibagi 255.0 agar AI tidak bingung menerima angka raksasa
+            arr = tf.keras.utils.img_to_array(img_res) / 255.0 
             arr = np.expand_dims(arr, 0)
             
             pred = model.predict(arr, verbose=0)
             
-            # PERBAIKAN 2: LOGIKA INDEKS YANG BENAR (Berdasarkan model Colab kamu)
-            # Jika tebakan mendekati 1 (di atas 0.5), artinya itu 'O' (Organik)
-            if pred[0][0] > 0.5:
-                hasil = 0 # Kode untuk memunculkan UI Organik
+            # PENTING 2: LOGIKA FIX DAN FINAL BERDASARKAN ALFABET COLAB ('O'=0, 'R'=1)
+            if pred[0][0] < 0.5:
+                status, warna = "ORGANIK 🍃", "#98FB98"
+                ide = random.choice(ide_organik)
+                pesan = "Keren! Sampah ini bisa kembali ke alam."
             else:
-                hasil = 1 # Kode untuk memunculkan UI Anorganik
+                status, warna = "ANORGANIK ⚙️", "#D3D3D3"
+                ide = random.choice(ide_anorganik)
+                pesan = "Daur ulang segera untuk menjaga bumi!"
+
+            st.markdown(f"<h1 style='color:{warna} !important; font-size: 50px;'>➡️ {status}</h1>", unsafe_allow_html=True)
+            st.write(f"🌍 {pesan}")
             
-            img_xray = buat_xray_kontur(img_asli)
-            
-            if hasil == 0:
-                st.markdown("<h1 style='color: #98FB98 !important; font-size: 50px;'>➡️ 🗑️ ORGANIK 🍃</h1>", unsafe_allow_html=True)
-                bisnis = random.choice(ide_organik) 
-                dampak = random.choice(dampak_organik)
-            else:
-                st.markdown("<h1 style='color: #D3D3D3 !important; font-size: 50px;'>➡️ 🗑️ ANORGANIK ⚙️</h1>", unsafe_allow_html=True)
-                bisnis = random.choice(ide_anorganik) 
-                dampak = random.choice(dampak_anorganik)
-            
-            # --- FITUR: KOTAK JEJAK KARBON ---
-            st.markdown(f"""
-                <div class="eco-impact">
-                    <p style="color: #E8F5E9 !important; font-size: 22px !important; margin: 0 !important;">{dampak}</p>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            # --- FITUR: PROPOSAL BISNIS ---
             st.markdown(f"""
                 <div class="business-note">
-                    <h3 style="color: #3E2723 !important;">💡 Peluang Bisnis Daur Ulang:</h3>
-                    <p style="font-size: 24px; font-weight: bold; color: #3E2723 !important;">{bisnis['ide']}</p>
-                    <ul style="color: #3E2723 !important;">
-                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Estimasi Modal:</b> {bisnis['modal']}</li>
-                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Potensi Harga Jual:</b> {bisnis['jual']}</li>
-                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Target Pasar:</b> {bisnis['target']}</li>
+                    <h3>💡 Peluang Bisnis:</h3>
+                    <p style="font-size:24px; font-weight:bold;">{ide['ide']}</p>
+                    <ul>
+                        <li>Modal Awal: {ide['modal']}</li>
+                        <li>Target Pasar: {ide['target']}</li>
                     </ul>
                 </div>
             """, unsafe_allow_html=True)
-
-            # --- FITUR: RADAR GOOGLE MAPS ---
-            if hasil != 0:
-                st.markdown("""
-                    <a href="https://www.google.com/maps/search/Bank+Sampah+Terdekat" target="_blank" class="maps-btn">
-                        📍 Buka Peta: Cari Bank Sampah Terdekat
-                    </a>
-                """, unsafe_allow_html=True)
             
-            st.markdown("### 👁️ Analisis Struktur AI:")
-            st.markdown('<div class="xray-frame">', unsafe_allow_html=True)
-            st.image(img_xray, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-                
+            st.markdown("### 👁️ Struktur Material (Sinar-X):")
+            st.image(buat_xray_kontur(img_asli), use_container_width=True)
     else:
-        st.write("👈 Upload foto di sebelah kiri untuk melihat hasil, ide bisnis, dan Sinar-X di sini.")
-        
-    st.markdown("<br><hr style='border: 1px dashed white;'>", unsafe_allow_html=True)
-    st.markdown("### **PANDUAN DASAR:**")
-    st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
+        st.info("Unggah foto sampah di sebelah kiri untuk melihat keajaiban AI!")
+
+st.write("---")
+st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
