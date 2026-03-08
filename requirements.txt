@@ -1,7 +1,7 @@
 streamlit
 tensorflow
-pillow
+Pillow
 numpy
 gdown
+google-generativeai
 pillow-heif
-matplotlib
