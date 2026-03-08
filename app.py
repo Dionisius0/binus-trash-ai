@@ -13,7 +13,7 @@ register_heif_opener()
 # --- 1. KONEKSI KE OTAK AI V4 ---
 @st.cache_resource
 def download_dan_muat_model():
-    # ID Drive Otak V4 milikmu sudah terpasang otomatis!
+    # ID Drive Otak V4 milikmu sudah terpasang
     id_drive = '1m0LTjbpmfEI-pqjpOb-cwu_MvZRaqraO' 
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v4.h5' 
@@ -44,15 +44,19 @@ ide_anorganik = [
     {"ide": "👜 Tas Anyaman Estetik", "modal": "Rp 15.000", "target": "Pasar Fashion & Turis"}
 ]
 
-# --- 4. DESAIN CSS PAPAN TULIS ANTI-LIGHT MODE ---
+# --- 4. DESAIN CSS PAPAN TULIS ANTI-LIGHT MODE (UPGRADE) ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
     
-    .stApp, [data-testid="stAppViewContainer"] { background-color: #1a252f !important; }
+    /* 1. MENGGEMBOK LATAR BELAKANG HP AGAR TETAP GELAP */
+    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] { 
+        background-color: #1a252f !important; 
+    }
     
+    /* 2. PAPAN TULIS UTAMA */
     .block-container {
         background-color: #2F4F4F !important;
         background-image: 
@@ -65,18 +69,52 @@ st.markdown("""
         box-shadow: inset 0 0 80px rgba(0,0,0,0.8), 5px 5px 25px rgba(0,0,0,0.5) !important;
     }
 
-    [data-testid="stFileUploadDropzone"] {
-        background-color: rgba(0,0,0,0.4) !important;
-        border: 2px dashed #F8F8FF !important;
-    }
-
-    html, body, p, h1, h2, h3, li, span, label { 
+    /* 3. MENGGEMBOK SELURUH TEKS AGAR PUTIH */
+    html, body, p, h1, h2, h3, h4, h5, h6, li, span, label, div { 
         font-family: 'Caveat', cursive !important; 
         color: #F8F8FF !important; 
     }
-    .polaroid { background: white; padding: 10px 10px 30px 10px; border-radius: 2px; transform: rotate(-1deg); box-shadow: 3px 3px 10px rgba(0,0,0,0.4); }
-    .business-note { background: #fff9c4; padding: 15px; border-radius: 2px; border-top: 10px solid #fbc02d; color: #333 !important; }
-    .business-note * { color: #333 !important; }
+
+    /* 4. MENGGEMBOK KOTAK UPLOAD AGAR ANTI-LIGHT MODE */
+    [data-testid="stFileUploadDropzone"] {
+        background-color: #1e2a35 !important; /* Paksa latar kotak menjadi gelap */
+        border: 2px dashed #F8F8FF !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Paksa teks di dalam kotak upload menjadi putih */
+    [data-testid="stFileUploadDropzone"] * { 
+        color: #F8F8FF !important; 
+    }
+    
+    /* Paksa tombol "Browse files" di dalam kotak upload */
+    [data-testid="stFileUploadDropzone"] button {
+        background-color: #4CAF50 !important;
+        color: white !important;
+        border: 1px solid white !important;
+    }
+
+    /* 5. ELEMEN BISNIS & POLAROID */
+    .polaroid { 
+        background: white !important; 
+        padding: 10px 10px 30px 10px; 
+        border-radius: 2px; 
+        transform: rotate(-1deg); 
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.4); 
+    }
+    
+    .business-note { 
+        background: #fff9c4 !important; 
+        padding: 15px; 
+        border-radius: 2px; 
+        border-top: 10px solid #fbc02d !important; 
+    }
+    
+    /* Khusus kotak bisnis, teks harus gelap agar bisa dibaca */
+    .business-note * { 
+        color: #333 !important; 
+        text-shadow: none !important; 
+    }
     </style>
 """, unsafe_allow_html=True)
 
