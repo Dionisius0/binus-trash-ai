@@ -5,40 +5,39 @@ import numpy as np
 import os
 import gdown
 import matplotlib.cm as cm
-import random 
 import google.generativeai as genai
 from pillow_heif import register_heif_opener
 
 register_heif_opener()
 
 # --- 1. KONEKSI KE OTAK AI & GEMINI ---
-# Masukkan API Key Gemini kamu di sini untuk fitur Ide Bisnis Dinamis (Poin 3)
+# Masukkan API Key Gemini kamu di bawah ini
 API_KEY_GEMINI = "MASUKKAN_API_KEY_GEMINI_KAMU_DI_SINI" 
 genai.configure(api_key=API_KEY_GEMINI)
 
 @st.cache_resource
 def download_dan_muat_model():
-    id_drive = '1Trv1Itbr8YeTnkes4FF5CpNB5ApmcpK7' # ID Drive milikmu
+    id_drive = '1Trv1Itbr8YeTnkes4FF5CpNB5ApmcpK7' 
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v3.h5'
     if not os.path.exists(nama_file):
-        with st.spinner('Membersihkan Papan Tulis...'):
+        with st.spinner('Menyiapkan Papan Tulis...'):
             gdown.download(url, nama_file, quiet=False)
     return tf.keras.models.load_model(nama_file)
 
 model = download_dan_muat_model()
 
-# --- 2. FITUR DINAMIS GEMINI (POIN 3) ---
+# --- 2. FITUR DINAMIS GEMINI ---
 def ambil_ide_bisnis_dinamis(img, kategori):
     try:
         model_gemini = genai.GenerativeModel('gemini-1.5-flash')
-        prompt = f"Lihat foto sampah {kategori} ini. Berikan 1 ide bisnis daur ulang kreatif, modal dalam Rupiah, dan target pasarnya. Jawab dengan gaya santai ala mahasiswa manajemen."
+        prompt = f"Sebagai konsultan bisnis, lihat foto sampah {kategori} ini. Berikan 1 ide bisnis kreatif, estimasi modal awal, dan siapa target konsumennya. Gunakan bahasa yang mudah dimengerti mahasiswa."
         response = model_gemini.generate_content([prompt, img])
         return response.text
     except:
-        return "⚠️ (Gemini API belum terhubung. Gunakan ide standar di bawah ini)"
+        return "⚠️ Hubungkan API Key Gemini untuk mendapatkan ide bisnis dinamis sesuai foto."
 
-# --- 3. MESIN SINAR-X KONTUR ---
+# --- 3. MESIN SINAR-X ---
 def buat_xray_kontur(img_asli):
     img_gray = img_asli.convert("L")
     img_edges = img_gray.filter(ImageFilter.FIND_EDGES)
@@ -48,70 +47,52 @@ def buat_xray_kontur(img_asli):
     colored_edges = np.uint8(colored_edges * 255)
     return Image.fromarray(colored_edges).convert("RGB")
 
-# --- 4. DESAIN CSS PAPAN TULIS ULTRA (TEXTURE & ANTI-LIGHT MODE) ---
+# --- 4. DESAIN CSS ULTRA (ANTI-LIGHT MODE & TEKSTUR) ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
     
-    /* FIX: PAKSA TEMA GELAP TOTAL AGAR TEKS PUTIH TERBACA */
-    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] { 
-        background-color: #1a252f !important; 
-    }
+    /* PAKSA TEMA GELAP */
+    .stApp, [data-testid="stAppViewContainer"] { background-color: #1a252f !important; }
     
-    /* TEKSTUR PAPAN TULIS DENGAN GRID */
+    /* TEKSTUR PAPAN TULIS */
     .block-container {
         background-color: #2F4F4F !important;
         background-image: 
-            linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px) !important;
-        background-size: 35px 35px !important;
-        border: 15px solid #5C4033 !important; 
+            linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px) !important;
+        background-size: 30px 30px !important;
+        border: 12px solid #5C4033 !important; 
         border-radius: 10px !important;
         padding: 40px !important;
-        box-shadow: inset 0 0 100px rgba(0,0,0,0.9), 10px 10px 30px rgba(0,0,0,0.6) !important;
+        box-shadow: inset 0 0 80px rgba(0,0,0,0.8), 5px 5px 25px rgba(0,0,0,0.5) !important;
     }
 
-    /* KOTAK UPLOAD ANTI-LIGHT MODE */
+    /* KOTAK UPLOAD ANTI-LIGHT MODE HP */
     [data-testid="stFileUploadDropzone"] {
-        background-color: rgba(0,0,0,0.5) !important;
+        background-color: rgba(0,0,0,0.4) !important;
         border: 2px dashed #F8F8FF !important;
     }
     [data-testid="stFileUploadDropzone"] * { color: #F8F8FF !important; }
 
-    /* ANIMASI JUDUL MENGAMBANG */
+    /* ANIMASI JUDUL */
     @keyframes floating {
         0% { transform: translateY(0px); }
-        50% { transform: translateY(-12px); }
+        50% { transform: translateY(-10px); }
         100% { transform: translateY(0px); }
     }
     .judul-binus {
         animation: floating 3s ease-in-out infinite;
-        text-align: center; color: #F8F8FF !important; font-size: 60px;
+        text-align: center; color: #F8F8FF !important; font-size: 55px;
     }
 
-    /* ANIMASI TOMBOL PULSE */
-    @keyframes pulse-green {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-        70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-    }
-    div.stButton > button {
-        animation: pulse-green 2s infinite !important;
-        background-color: #4CAF50 !important;
-        color: white !important;
-        border: 2px solid white !important;
-        border-radius: 15px !important;
-        font-size: 24px !important;
-    }
-
-    html, body, p, h2, h3, li, span, label { 
+    html, body, p, h1, h2, h3, li, span, label { 
         font-family: 'Caveat', cursive !important; 
         color: #F8F8FF !important; 
     }
-    .polaroid { background: #fdfdfd; padding: 10px 10px 30px 10px; border-radius: 2px; box-shadow: 3px 3px 15px rgba(0,0,0,0.5); transform: rotate(-1deg); }
-    .business-note { background: #fff9c4; padding: 20px; border-radius: 2px; border-top: 10px solid #fbc02d; color: #333 !important; }
+    .business-note { background: #fff9c4; padding: 20px; border-radius: 2px; border-top: 10px solid #fbc02d; }
     .business-note * { color: #333 !important; }
     </style>
 """, unsafe_allow_html=True)
@@ -125,45 +106,40 @@ kiri, kanan = st.columns(2)
 
 with kiri:
     st.markdown("### 1. UNGGAH FOTO ☁️")
-    # FIX: Penambahan format file super lengkap
     foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic", "JPG", "PNG", "JPEG"])
     if foto:
         img_asli = Image.open(foto).convert('RGB')
-        st.markdown('<div class="polaroid">', unsafe_allow_html=True)
         st.image(img_asli, use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
         st.write("")
         tombol = st.button("MULAI ANALISIS ➜")
 
 with kanan:
     st.markdown("### 2. HASIL ANALISIS 🎯")
     if foto and 'tombol' in locals() and tombol:
-        with st.spinner('AI sedang membedah struktur sampah...'):
+        with st.spinner('AI sedang membedah material...'):
             img_res = img_asli.resize((150, 150))
             arr = tf.keras.utils.img_to_array(img_res) / 255.0
             arr = np.expand_dims(arr, 0)
             
             pred = model.predict(arr, verbose=0)
             
-            # FIX LOGIKA TOTAL: 0=ANORGANIK, 1=ORGANIK
+            # FIX LOGIKA BERDASARKAN TRAINING: 0=ANORGANIK (R), 1=ORGANIK (O)
             if pred[0][0] < 0.5:
                 status, warna = "ANORGANIK ⚙️", "#D3D3D3"
             else:
                 status, warna = "ORGANIK 🍃", "#98FB98"
 
-            st.markdown(f"<h1 style='color:{warna} !important; font-size: 55px;'>➡️ {status}</h1>", unsafe_allow_html=True)
+            st.markdown(f"<h1 style='color:{warna} !important; font-size: 50px;'>➡️ {status}</h1>", unsafe_allow_html=True)
             
-            # Fitur Poin 3: Analisis Dinamis Gemini
             st.markdown("<div class='business-note'>", unsafe_allow_html=True)
-            st.markdown("### 💡 Analisis Bisnis Dinamis:")
-            ide_ai = ambil_ide_bisnis_dinamis(img_asli, status)
-            st.write(ide_ai)
+            st.markdown("### 💡 Ide Bisnis Khusus Untukmu:")
+            st.write(ambil_ide_bisnis_dinamis(img_asli, status))
             st.markdown("</div>", unsafe_allow_html=True)
             
-            st.markdown("### 👁️ Sinar-X Material:")
+            st.markdown("### 👁️ Struktur Material (Sinar-X):")
             st.image(buat_xray_kontur(img_asli), use_container_width=True)
     else:
-        st.info("Papan tulis siap! Silakan unggah foto di sebelah kiri.")
+        st.info("Unggah foto sampah di sebelah kiri untuk memulai!")
 
 st.write("---")
 st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
