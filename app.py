@@ -10,15 +10,15 @@ from pillow_heif import register_heif_opener
 
 register_heif_opener()
 
-# --- 1. KONEKSI KE OTAK AI ---
+# --- 1. KONEKSI KE OTAK AI V4 ---
 @st.cache_resource
 def download_dan_muat_model():
-    # ID Drive sudah benar menggunakan milikmu
-    id_drive = '1Trv1Itbr8YeTnkes4FF5CpNB5ApmcpK7' 
+    # ID Drive Otak V4 milikmu sudah terpasang otomatis!
+    id_drive = '1m0LTjbpmfEI-pqjpOb-cwu_MvZRaqraO' 
     url = f'https://drive.google.com/uc?id={id_drive}'
-    nama_file = 'model_sampah_v3.h5'
+    nama_file = 'model_sampah_v4.h5' 
     if not os.path.exists(nama_file):
-        with st.spinner('Menghapus coretan di papan tulis...'):
+        with st.spinner('Memasang Otak V4 Super Cerdas...'):
             gdown.download(url, nama_file, quiet=False)
     return tf.keras.models.load_model(nama_file)
 
@@ -36,12 +36,12 @@ def buat_xray_kontur(img_asli):
 
 # --- 3. DATABASE IDE BISNIS ---
 ide_organik = [
-    {"ide": "🌱 Pupuk Kompos Cair", "modal": "Rp 50rb", "target": "Pecinta Tanaman"},
-    {"ide": "🐛 Budidaya Maggot", "modal": "Rp 100rb", "target": "Peternak Lokal"}
+    {"ide": "🌱 Pupuk Kompos Cair", "modal": "Rp 50.000", "target": "Pecinta Tanaman & Petani Lokal"},
+    {"ide": "🐛 Budidaya Maggot BSF", "modal": "Rp 100.000", "target": "Peternak Ikan & Ayam"}
 ]
 ide_anorganik = [
-    {"ide": "🧱 Paving Block Eco", "modal": "Rp 20rb", "target": "Kontraktor"},
-    {"ide": "👜 Tas Anyaman Estetik", "modal": "Rp 15rb", "target": "Pasar Fashion"}
+    {"ide": "🧱 Paving Block Eco-Brick", "modal": "Rp 20.000", "target": "Kontraktor & Perumahan"},
+    {"ide": "👜 Tas Anyaman Estetik", "modal": "Rp 15.000", "target": "Pasar Fashion & Turis"}
 ]
 
 # --- 4. DESAIN CSS PAPAN TULIS ANTI-LIGHT MODE ---
@@ -81,7 +81,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- 5. TATA LETAK ---
-st.markdown("<h1 style='text-align: center; font-size: 60px;'>DETEKTOR SAMPAH</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; font-size: 60px;'>DETEKTOR SAMPAH V4</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-size: 20px;'>Kelompok 3 - Business Management B29 🎓</p>", unsafe_allow_html=True)
 st.write("---")
 
@@ -101,26 +101,26 @@ with kiri:
 with kanan:
     st.markdown("### 2. HASIL ANALISIS 🎯")
     if foto and 'tombol' in locals() and tombol:
-        with st.spinner('AI sedang memikir...'):
+        with st.spinner('Otak V4 sedang memikir...'):
             img_res = img_asli.resize((150, 150))
             
-            # PENTING 1: Dibagi 255.0 agar AI tidak bingung menerima angka raksasa
+            # PENTING 1: Dibagi 255.0 agar AI tidak bingung (Skala 0-1)
             arr = tf.keras.utils.img_to_array(img_res) / 255.0 
             arr = np.expand_dims(arr, 0)
             
             pred = model.predict(arr, verbose=0)
             
-            # PENTING 2: LOGIKA FIX DAN FINAL BERDASARKAN ALFABET COLAB ('O'=0, 'R'=1)
+            # PENTING 2: LOGIKA FIX BERDASARKAN ALFABET COLAB ('O'=0, 'R'=1)
             if pred[0][0] < 0.5:
                 status, warna = "ORGANIK 🍃", "#98FB98"
                 ide = random.choice(ide_organik)
-                pesan = "Keren! Sampah ini bisa kembali ke alam."
+                pesan = "Keren! Sampah ini bisa kembali ke alam sebagai pupuk kompos."
             else:
-                status, warna = "ANORGANIK ⚙️", "#D3D3D3"
+                status, warna = "ANORGANIK / DAUR ULANG ♻️", "#D3D3D3"
                 ide = random.choice(ide_anorganik)
-                pesan = "Daur ulang segera untuk menjaga bumi!"
+                pesan = "Masuk kategori daur ulang pabrik untuk menjaga bumi!"
 
-            st.markdown(f"<h1 style='color:{warna} !important; font-size: 50px;'>➡️ {status}</h1>", unsafe_allow_html=True)
+            st.markdown(f"<h1 style='color:{warna} !important; font-size: 45px;'>➡️ {status}</h1>", unsafe_allow_html=True)
             st.write(f"🌍 {pesan}")
             
             st.markdown(f"""
@@ -137,7 +137,7 @@ with kanan:
             st.markdown("### 👁️ Struktur Material (Sinar-X):")
             st.image(buat_xray_kontur(img_asli), use_container_width=True)
     else:
-        st.info("Unggah foto sampah di sebelah kiri untuk melihat keajaiban AI!")
+        st.info("Unggah foto sampah di sebelah kiri untuk menguji keajaiban Otak V4!")
 
 st.write("---")
-st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
+st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas & Kardus | 🍎 Sisa Makanan")
