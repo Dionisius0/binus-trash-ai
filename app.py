@@ -19,17 +19,21 @@ genai.configure(api_key=API_KEY_GEMINI)
 def analisis_mendalam_gemini(img, tebakan_awal):
     try:
         model_gemini = genai.GenerativeModel('gemini-2.5-flash')
-        prompt = f"""Kamu adalah konsultan bisnis dan pengolahan limbah. 
-        Mata sensor AI kami menebak gambar ini masuk kategori: {tebakan_awal}. 
-        Tolong analisa gambar ini seperti manusia:
-        1. Konfirmasi: Benda apa sebenarnya yang ada di foto ini? (Koreksi jika tebakan sensor salah).
-        2. Ide Bisnis: Berikan 1 ide kreatif untuk mendaur ulang atau memanfaatkan benda tersebut, lengkap dengan perkiraan modal dan target pasarnya.
-        Jawab dengan bahasa yang profesional namun santai ala mahasiswa bisnis."""
+        
+        # PERUBAHAN: PROMPT ENGINEERING VERSI SANGAT FORMAL & AKADEMIS
+        prompt = f"""Anda adalah seorang konsultan bisnis tingkat eksekutif dan pakar manajemen limbah profesional.
+        Sistem sensor AI kami memprediksi gambar ini masuk dalam kategori: {tebakan_awal}.
+        Tolong berikan analisis teknis dan objektif berdasarkan gambar tersebut:
+        
+        1. Identifikasi Material: Konfirmasi secara akurat objek apa yang ada di dalam foto. Jika prediksi sistem sensor salah, berikan koreksi yang tepat berdasarkan jenis materialnya (organik/anorganik).
+        2. Prospek Daur Ulang & Bisnis: Berikan 1 (satu) rekomendasi ide bisnis atau pemanfaatan limbah tersebut yang bernilai ekonomis. Sertakan estimasi modal awal yang logis dan segmentasi target pasar yang spesifik.
+        
+        Instruksi Eksekusi: Gunakan Bahasa Indonesia yang sangat formal, akademis, dan profesional. DILARANG KERAS menggunakan kata sapaan santai (seperti 'bro', 'sis', 'halo'), gaya bahasa percakapan, atau basa-basi. Jawab langsung pada poinnya dengan struktur yang rapi."""
         
         response = model_gemini.generate_content([prompt, img])
         return response.text
     except Exception as e:
-        return f"⚠️ ERROR TEKNIS GEMINI: {e}"
+        return f"⚠️ Peringatan Sistem: Gagal memuat analisis lanjutan. Error: {e}"
 
 # --- 2. KONEKSI KE OTAK INSTING V4 (TENSORFLOW) ---
 @st.cache_resource
@@ -54,7 +58,7 @@ def buat_xray_kontur(img_asli):
     colored_edges = np.uint8(colored_edges * 255)
     return Image.fromarray(colored_edges).convert("RGB")
 
-# --- 4. DATABASE STANDAR (JIKA GEMINI ERROR) ---
+# --- 4. DATABASE STANDAR ---
 ide_organik = [
     {"ide": "🌱 Pupuk Kompos Cair", "modal": "Rp 50.000", "target": "Pecinta Tanaman & Petani Lokal"}
 ]
@@ -116,7 +120,6 @@ with kanan:
     st.markdown("### 2. HASIL ANALISIS 🎯")
     if foto and 'tombol' in locals() and tombol:
         
-        # --- A. KERJA OTAK INSTING (TENSORFLOW) ---
         with st.spinner('Mata AI sedang memindai pola tekstur...'):
             img_res = img_asli.resize((150, 150))
             arr = tf.keras.utils.img_to_array(img_res) / 255.0 
@@ -131,13 +134,12 @@ with kanan:
 
             st.markdown(f"<h1 style='color:{warna} !important; font-size: 40px;'>➡️ Prediksi Sensor: {status}</h1>", unsafe_allow_html=True)
 
-        # --- B. KERJA OTAK LOGIKA (GEMINI) ---
-        with st.spinner('Otak Logika sedang mengkonfirmasi hasil...'):
+        with st.spinner('Otak Logika sedang menyusun proposal bisnis...'):
             analisis_cerdas = analisis_mendalam_gemini(img_asli, status)
             
             st.markdown(f"""
                 <div class="business-note">
-                    <h3>🧠 Analisis Bisnis Mendalam (Gemini AI):</h3>
+                    <h3>🧠 Laporan Analisis & Eksekusi Bisnis (Gemini AI):</h3>
                     <p style="font-size:18px; font-family: sans-serif !important;">{analisis_cerdas}</p>
                 </div>
             """, unsafe_allow_html=True)
