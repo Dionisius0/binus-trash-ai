@@ -13,7 +13,7 @@ register_heif_opener()
 # --- 1. KONEKSI KE OTAK AI ---
 @st.cache_resource
 def download_dan_muat_model():
-    id_drive = 'MASUKKAN_ID_DRIVE_YANG_BARU_DI_SINI' # ⬅️ GANTI BAGIAN INI DENGAN ID GOOGLE DRIVE KAMU
+    id_drive = '1TrvlItbr8YeTnkes4FF5CpNB5ApmcpK7' # ⬅️ GANTI BAGIAN INI DENGAN ID GOOGLE DRIVE KAMU
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v3.h5'
     if not os.path.exists(nama_file):
@@ -58,71 +58,95 @@ dampak_anorganik = [
     "🌳 Aksi daur ulangmu hari ini ikut membantu mengurangi jejak karbon di atmosfer bumi."
 ]
 
-# --- 4. DESAIN CSS PAPAN TULIS & BINGKAI KAYU (UPGRADE ANIMASI & ANTI-LIGHT MODE) ---
+# --- 4. DESAIN CSS PAPAN TULIS & BINGKAI KAYU (VERSI ULTRA) ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
     
-    /* 1. KUNCI TEMA GELAP (ANTI-LIGHT MODE HP) */
-    [data-testid="stAppViewContainer"], .stApp { background-color: #2c3e50 !important; }
+    /* PENGATURAN WARNA DASAR SELURUH LAYAR */
+    [data-testid="stAppViewContainer"] { background-color: #2c3e50 !important; }
     [data-testid="stHeader"] { background-color: transparent !important; }
-    html, body, [class*="css"], p, span, div, label, h1, h2, h3, h4, li {
-        font-family: 'Caveat', 'Comic Sans MS', cursive !important;
-        color: #F8F8FF !important;
+    html, body, p, span, h1, h2, h3, h4, li, div {
+        font-family: 'Caveat', cursive !important;
         letter-spacing: 1px;
     }
     
-    /* 2. KOTAK PAPAN TULIS UTAMA */
+    /* --- TEKSTUR PAPAN TULIS & GRID --- */
     .block-container {
         background-color: #2F4F4F !important; 
+        /* Membuat efek garis kotak-kotak tipis seperti buku tulis matematika */
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.05) 2px, transparent 2px),
+            linear-gradient(90deg, rgba(255,255,255,0.05) 2px, transparent 2px) !important;
+        background-size: 30px 30px !important;
         border: 15px solid #5C4033 !important; 
         border-radius: 10px !important;
         padding: 40px !important;
-        box-shadow: 10px 10px 30px rgba(0,0,0,0.8) !important;
+        /* Efek gelap di pinggiran (vignette) agar terlihat seperti papan sungguhan */
+        box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 10px 10px 30px rgba(0,0,0,0.8) !important; 
         max-width: 1000px !important;
     }
 
-    /* 3. ANIMASI JUDUL MENGAMBANG (FLOATING) */
-    @keyframes float {
-        0% { transform: translateY(0px); text-shadow: 0px 5px 15px rgba(0,0,0,0.5); }
-        50% { transform: translateY(-10px); text-shadow: 0px 15px 15px rgba(0,0,0,0.2); }
-        100% { transform: translateY(0px); text-shadow: 0px 5px 15px rgba(0,0,0,0.5); }
+    /* --- ANTI-LIGHT MODE UNTUK KOTAK UPLOAD HP --- */
+    [data-testid="stFileUploadDropzone"] { 
+        background-color: rgba(0, 0, 0, 0.5) !important; /* Paksa latar jadi gelap transparan */
+        border: 2px dashed #F8F8FF !important; 
+        border-radius: 10px !important;
     }
-    .judul-animasi {
-        animation: float 3s ease-in-out infinite;
-        text-align: center; font-size: 60px; margin-bottom: 0px;
+    [data-testid="stFileUploadDropzone"] * { 
+        color: #F8F8FF !important; /* Paksa semua teks di dalamnya jadi putih */
+    }
+    [data-testid="stFileUploadDropzone"] button {
+        background-color: #4CAF50 !important; /* Paksa tombol browse jadi hijau */
+        color: white !important;
+        border: 2px solid white !important;
     }
 
-    /* 4. ANIMASI TOMBOL BERDENYUT (PULSE GLOW) */
-    @keyframes pulse-green {
-        0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-        70% { box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+    /* --- ANIMASI JUDUL MENGAMBANG --- */
+    @keyframes float-animation {
+        0% { transform: translateY(0px); text-shadow: 0px 5px 10px rgba(0,0,0,0.5); }
+        50% { transform: translateY(-15px); text-shadow: 0px 20px 15px rgba(0,0,0,0.3); }
+        100% { transform: translateY(0px); text-shadow: 0px 5px 10px rgba(0,0,0,0.5); }
     }
-    [data-testid="baseButton-secondary"] { 
-        background-color: transparent !important; color: #F8F8FF !important; 
-        border: 2px solid #F8F8FF !important; border-radius: 15px !important; 
-        font-size: 20px !important; 
-        animation: pulse-green 2s infinite !important; /* Efek Animasi Aktif */
+    .judul-mengambang {
+        animation: float-animation 3s ease-in-out infinite;
+        text-align: center; font-size: 65px; color: #F8F8FF !important; margin-bottom: 0px;
     }
-    [data-testid="baseButton-secondary"]:hover { background-color: #F8F8FF !important; color: #2F4F4F !important; }
 
-    /* Elemen Lainnya (Tetap Sama) */
+    /* --- ANIMASI TOMBOL BERDENYUT KENCANG --- */
+    @keyframes pulse-animation {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.8); }
+        50% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+    }
+    div.stButton > button { 
+        animation: pulse-animation 2s infinite !important; 
+        background-color: #4CAF50 !important; 
+        color: white !important; 
+        border: 2px solid white !important; 
+        border-radius: 15px !important; 
+        font-size: 24px !important; 
+        height: 60px !important;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important;
+    }
+    div.stButton > button:hover { background-color: #45a049 !important; }
+
+    /* --- Elemen Dasar Lainnya --- */
+    h2, p { color: #F8F8FF !important; }
     .polaroid-frame { background-color: #F5F5DC !important; padding: 10px 10px 35px 10px !important; box-shadow: 3px 3px 15px rgba(0,0,0,0.6) !important; border-radius: 2px !important; transform: rotate(-2deg); display: block; margin: 0 auto; }
     .xray-frame { background-color: #000000 !important; padding: 5px !important; border: 2px solid #00FF00 !important; box-shadow: 0px 0px 15px #00FF00 !important; border-radius: 5px !important; }
     .business-note { background-color: #FFF9C4 !important; padding: 20px !important; border-radius: 2px !important; transform: rotate(1deg); box-shadow: 5px 5px 15px rgba(0,0,0,0.4) !important; border-top: 15px solid #FFD54F !important; margin-top: 20px; margin-bottom: 20px; }
     div.business-note * { color: #3E2723 !important; text-shadow: none !important; }
     .maps-btn { background-color: #4CAF50 !important; color: white !important; padding: 12px 20px !important; text-align: center !important; text-decoration: none !important; display: block !important; font-size: 22px !important; font-family: 'Caveat', cursive !important; border-radius: 10px !important; border: 2px solid white !important; box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important; transition: 0.3s !important; margin-top: 15px; margin-bottom: 25px; }
-    .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
+    .maps-btn:hover { transform: scale(1.02); }
     .eco-impact { background-color: rgba(76, 175, 80, 0.1) !important; border-left: 5px dashed #4CAF50 !important; padding: 15px !important; border-radius: 5px !important; margin-top: 10px; margin-bottom: 20px; }
-    [data-testid="stFileUploadDropzone"] { background-color: transparent !important; border: 2px dashed #F8F8FF !important; }
     </style>
 """, unsafe_allow_html=True)
 
 # --- 5. TATA LETAK ---
-st.markdown("<h1 class='judul-animasi'>DETEKTOR SAMPAH</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='judul-mengambang'>DETEKTOR SAMPAH</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-size: 20px;'>Dibuat oleh: Kelompok 3 - Business Management 🎓</p>", unsafe_allow_html=True)
 st.markdown("<hr style='border: 1px solid rgba(255,255,255,0.2);'>", unsafe_allow_html=True)
 
@@ -170,39 +194,4 @@ with kol_kanan:
             # --- FITUR: KOTAK JEJAK KARBON ---
             st.markdown(f"""
                 <div class="eco-impact">
-                    <p style="color: #E8F5E9 !important; font-size: 22px !important; margin: 0 !important;">{dampak}</p>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            # --- FITUR: PROPOSAL BISNIS ---
-            st.markdown(f"""
-                <div class="business-note">
-                    <h3 style="color: #3E2723 !important;">💡 Peluang Bisnis Daur Ulang:</h3>
-                    <p style="font-size: 24px; font-weight: bold; color: #3E2723 !important;">{bisnis['ide']}</p>
-                    <ul style="color: #3E2723 !important;">
-                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Estimasi Modal:</b> {bisnis['modal']}</li>
-                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Potensi Harga Jual:</b> {bisnis['jual']}</li>
-                        <li style="color: #3E2723 !important;"><b style="color: #3E2723 !important;">Target Pasar:</b> {bisnis['target']}</li>
-                    </ul>
-                </div>
-            """, unsafe_allow_html=True)
-
-            # --- FITUR: RADAR GOOGLE MAPS ---
-            if hasil != 0:
-                st.markdown("""
-                    <a href="https://www.google.com/maps/search/Bank+Sampah+Terdekat" target="_blank" class="maps-btn">
-                        📍 Buka Peta: Cari Bank Sampah Terdekat
-                    </a>
-                """, unsafe_allow_html=True)
-            
-            st.markdown("### 👁️ Analisis Struktur AI:")
-            st.markdown('<div class="xray-frame">', unsafe_allow_html=True)
-            st.image(img_xray, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-                
-    else:
-        st.write("👈 Upload foto di sebelah kiri untuk melihat hasil, ide bisnis, dan Sinar-X di sini.")
-        
-    st.markdown("<br><hr style='border: 1px dashed white;'>", unsafe_allow_html=True)
-    st.markdown("### **PANDUAN DASAR:**")
-    st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas | 🍎 Sisa Makanan")
+                    <p style="color: #E8F5E9 !important; font-
