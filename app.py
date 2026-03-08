@@ -13,7 +13,7 @@ register_heif_opener()
 # --- 1. KONEKSI KE OTAK AI ---
 @st.cache_resource
 def download_dan_muat_model():
-    id_drive = 'MASUKKAN_ID_DRIVE_YANG_BARU_DI_SINI' # ⬅️ GANTI BAGIAN INI DENGAN ID GOOGLE DRIVE KAMU
+    id_drive = '1TrvlItbr8YeTnkes4FF5CpNB5ApmcpK7' # ⬅️ GANTI BAGIAN INI DENGAN ID GOOGLE DRIVE KAMU
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v3.h5'
     if not os.path.exists(nama_file):
