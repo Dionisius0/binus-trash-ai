@@ -13,7 +13,7 @@ register_heif_opener()
 # --- 1. KONEKSI KE OTAK AI ---
 @st.cache_resource
 def download_dan_muat_model():
-    id_drive = '1TrvlItbr8YeTnkes4FF5CpNB5ApmcpK7' # ⬅️ GANTI BAGIAN INI DENGAN ID GOOGLE DRIVE KAMU
+    id_drive = '1Trv1Itbr8YeTnkes4FF5CpNB5ApmcpK7' 
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v3.h5'
     if not os.path.exists(nama_file):
@@ -114,7 +114,6 @@ st.markdown("""
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
     
-    /* FITUR BARU: Desain Kotak Jejak Karbon */
     .eco-impact {
         background-color: rgba(76, 175, 80, 0.1) !important;
         border-left: 5px dashed #4CAF50 !important;
@@ -139,7 +138,7 @@ kol_kiri, kol_kanan = st.columns(2)
 
 with kol_kiri:
     st.markdown("<h2 style='font-size: 35px;'>1. UNGGAH ☁️</h2>", unsafe_allow_html=True)
-    foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic"])
+    foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic", "JPG", "PNG", "JPEG"])
     
     if foto:
         img_asli = Image.open(foto).convert('RGB')
@@ -154,17 +153,20 @@ with kol_kanan:
     
     if foto and 'tombol' in locals() and tombol:
         with st.spinner('Menganalisis pola dan menghitung jejak karbon...'):
-            img_res = img_asli.resize((150, 150)) # ⬅️ Sudah disesuaikan untuk otak V3
-            arr = tf.keras.utils.img_to_array(img_res)
-            arr = tf.expand_dims(arr, 0)
+            img_res = img_asli.resize((150, 150))
+            
+            # PERBAIKAN 1: WAJIB DIBAGI 255.0 AGAR MESIN TIDAK ERROR
+            arr = tf.keras.utils.img_to_array(img_res) / 255.0
+            arr = np.expand_dims(arr, 0)
             
             pred = model.predict(arr, verbose=0)
             
-            # ⬅️ LOGIKA KEPUTUSAN AI BARU (Transfer Learning Sigmoid)
-            if pred[0][0] < 0.5:
-                hasil = 0 # Organik
+            # PERBAIKAN 2: LOGIKA INDEKS YANG BENAR (Berdasarkan model Colab kamu)
+            # Jika tebakan mendekati 1 (di atas 0.5), artinya itu 'O' (Organik)
+            if pred[0][0] > 0.5:
+                hasil = 0 # Kode untuk memunculkan UI Organik
             else:
-                hasil = 1 # Anorganik
+                hasil = 1 # Kode untuk memunculkan UI Anorganik
             
             img_xray = buat_xray_kontur(img_asli)
             
