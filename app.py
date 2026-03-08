@@ -29,7 +29,7 @@ def analisis_mendalam_gemini(img, tebakan_awal):
         response = model_gemini.generate_content([prompt, img])
         return response.text
     except Exception as e:
-        return "⚠️ Ups, Otak Logika (Gemini) sedang sibuk. Menggunakan data standar."
+        return f"⚠️ ERROR TEKNIS GEMINI: {e}"
 
 # --- 2. KONEKSI KE OTAK INSTING V4 (TENSORFLOW) ---
 @st.cache_resource
