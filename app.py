@@ -20,7 +20,6 @@ def analisis_mendalam_gemini(img, tebakan_awal):
     try:
         model_gemini = genai.GenerativeModel('gemini-2.5-flash')
         
-        # PERUBAHAN: PROMPT ENGINEERING VERSI SANGAT FORMAL & AKADEMIS
         prompt = f"""Anda adalah seorang konsultan bisnis tingkat eksekutif dan pakar manajemen limbah profesional.
         Sistem sensor AI kami memprediksi gambar ini masuk dalam kategori: {tebakan_awal}.
         Tolong berikan analisis teknis dan objektif berdasarkan gambar tersebut:
@@ -58,15 +57,7 @@ def buat_xray_kontur(img_asli):
     colored_edges = np.uint8(colored_edges * 255)
     return Image.fromarray(colored_edges).convert("RGB")
 
-# --- 4. DATABASE STANDAR ---
-ide_organik = [
-    {"ide": "🌱 Pupuk Kompos Cair", "modal": "Rp 50.000", "target": "Pecinta Tanaman & Petani Lokal"}
-]
-ide_anorganik = [
-    {"ide": "🧱 Paving Block Eco-Brick", "modal": "Rp 20.000", "target": "Kontraktor & Perumahan"}
-]
-
-# --- 5. DESAIN UI PAPAN TULIS ANTI-LIGHT MODE ---
+# --- 4. DESAIN UI PAPAN TULIS ANTI-LIGHT MODE ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
@@ -95,10 +86,20 @@ st.markdown("""
     .polaroid { background: white; padding: 10px 10px 30px 10px; border-radius: 2px; transform: rotate(-1deg); box-shadow: 3px 3px 10px rgba(0,0,0,0.4); }
     .business-note { background: #fff9c4; padding: 25px; border-radius: 5px; border-top: 15px solid #fbc02d; color: #333 !important; margin-top: 20px;}
     .business-note * { color: #333 !important; }
+    
+    /* KEMBALIKAN DESAIN TOMBOL MAPS */
+    .maps-btn {
+        background-color: #4CAF50 !important; color: white !important; padding: 12px 20px !important;
+        text-align: center !important; text-decoration: none !important; display: block !important;
+        font-size: 22px !important; font-family: 'Caveat', cursive !important; border-radius: 10px !important;
+        border: 2px solid white !important; box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important;
+        transition: 0.3s !important; margin-top: 20px; margin-bottom: 25px;
+    }
+    .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 6. TATA LETAK ---
+# --- 5. TATA LETAK ---
 st.markdown("<h1 style='text-align: center; font-size: 60px;'>DETEKTOR SAMPAH V5 (HIBRIDA AI)</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-size: 20px;'>Kelompok 3 - Business Management B29 🎓</p>", unsafe_allow_html=True)
 st.write("---")
@@ -143,6 +144,14 @@ with kanan:
                     <p style="font-size:18px; font-family: sans-serif !important;">{analisis_cerdas}</p>
                 </div>
             """, unsafe_allow_html=True)
+            
+            # --- KEMBALIKAN FITUR: RADAR GOOGLE MAPS ---
+            if status == "ANORGANIK / DAUR ULANG ♻️":
+                st.markdown("""
+                    <a href="https://www.google.com/maps/search/Bank+Sampah+Terdekat" target="_blank" class="maps-btn">
+                        📍 Buka Peta: Cari Bank Sampah Terdekat
+                    </a>
+                """, unsafe_allow_html=True)
             
             st.markdown("### 👁️ Struktur Material (Sinar-X):")
             st.image(buat_xray_kontur(img_asli), use_container_width=True)
