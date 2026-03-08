@@ -3,5 +3,4 @@ tensorflow
 Pillow
 numpy
 gdown
-google-generativeai
 pillow-heif
