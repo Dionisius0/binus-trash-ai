@@ -13,7 +13,6 @@ register_heif_opener()
 # --- 1. KONEKSI KE OTAK AI V4 ---
 @st.cache_resource
 def download_dan_muat_model():
-    # ID Drive Otak V4 milikmu sudah terpasang
     id_drive = '1m0LTjbpmfEI-pqjpOb-cwu_MvZRaqraO' 
     url = f'https://drive.google.com/uc?id={id_drive}'
     nama_file = 'model_sampah_v4.h5' 
@@ -44,19 +43,15 @@ ide_anorganik = [
     {"ide": "👜 Tas Anyaman Estetik", "modal": "Rp 15.000", "target": "Pasar Fashion & Turis"}
 ]
 
-# --- 4. DESAIN CSS PAPAN TULIS ANTI-LIGHT MODE (UPGRADE) ---
+# --- 4. DESAIN CSS PAPAN TULIS ANTI-LIGHT MODE ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
     
-    /* 1. MENGGEMBOK LATAR BELAKANG HP AGAR TETAP GELAP */
-    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] { 
-        background-color: #1a252f !important; 
-    }
+    .stApp, [data-testid="stAppViewContainer"] { background-color: #1a252f !important; }
     
-    /* 2. PAPAN TULIS UTAMA */
     .block-container {
         background-color: #2F4F4F !important;
         background-image: 
@@ -69,52 +64,34 @@ st.markdown("""
         box-shadow: inset 0 0 80px rgba(0,0,0,0.8), 5px 5px 25px rgba(0,0,0,0.5) !important;
     }
 
-    /* 3. MENGGEMBOK SELURUH TEKS AGAR PUTIH */
-    html, body, p, h1, h2, h3, h4, h5, h6, li, span, label, div { 
+    html, body, p, h1, h2, h3, li, span, label { 
         font-family: 'Caveat', cursive !important; 
         color: #F8F8FF !important; 
     }
 
-    /* 4. MENGGEMBOK KOTAK UPLOAD AGAR ANTI-LIGHT MODE */
+    /* --- SOLUSI WARNA FONT UNIVERSAL UNTUK KOTAK UPLOAD --- */
     [data-testid="stFileUploadDropzone"] {
-        background-color: #1e2a35 !important; /* Paksa latar kotak menjadi gelap */
-        border: 2px dashed #F8F8FF !important;
-        border-radius: 10px !important;
+        background-color: transparent !important; /* Biarkan transparan agar ikut warna sistem */
+        border: 3px dashed #E67E22 !important; /* Garis Oranye Bata */
     }
     
-    /* Paksa teks di dalam kotak upload menjadi putih */
+    /* Warna Oranye Bata (#E67E22) sangat kontras di atas Putih dan Hitam */
     [data-testid="stFileUploadDropzone"] * { 
-        color: #F8F8FF !important; 
+        color: #E67E22 !important; 
+        font-weight: bold !important;
     }
     
-    /* Paksa tombol "Browse files" di dalam kotak upload */
     [data-testid="stFileUploadDropzone"] button {
-        background-color: #4CAF50 !important;
+        background-color: #E67E22 !important;
         color: white !important;
-        border: 1px solid white !important;
+        border: 2px solid white !important;
+        border-radius: 8px !important;
     }
+    /* ------------------------------------------------------ */
 
-    /* 5. ELEMEN BISNIS & POLAROID */
-    .polaroid { 
-        background: white !important; 
-        padding: 10px 10px 30px 10px; 
-        border-radius: 2px; 
-        transform: rotate(-1deg); 
-        box-shadow: 3px 3px 10px rgba(0,0,0,0.4); 
-    }
-    
-    .business-note { 
-        background: #fff9c4 !important; 
-        padding: 15px; 
-        border-radius: 2px; 
-        border-top: 10px solid #fbc02d !important; 
-    }
-    
-    /* Khusus kotak bisnis, teks harus gelap agar bisa dibaca */
-    .business-note * { 
-        color: #333 !important; 
-        text-shadow: none !important; 
-    }
+    .polaroid { background: white; padding: 10px 10px 30px 10px; border-radius: 2px; transform: rotate(-1deg); box-shadow: 3px 3px 10px rgba(0,0,0,0.4); }
+    .business-note { background: #fff9c4; padding: 15px; border-radius: 2px; border-top: 10px solid #fbc02d; color: #333 !important; }
+    .business-note * { color: #333 !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -142,13 +119,11 @@ with kanan:
         with st.spinner('Otak V4 sedang memikir...'):
             img_res = img_asli.resize((150, 150))
             
-            # PENTING 1: Dibagi 255.0 agar AI tidak bingung (Skala 0-1)
             arr = tf.keras.utils.img_to_array(img_res) / 255.0 
             arr = np.expand_dims(arr, 0)
             
             pred = model.predict(arr, verbose=0)
             
-            # PENTING 2: LOGIKA FIX BERDASARKAN ALFABET COLAB ('O'=0, 'R'=1)
             if pred[0][0] < 0.5:
                 status, warna = "ORGANIK 🍃", "#98FB98"
                 ide = random.choice(ide_organik)
