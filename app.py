@@ -13,9 +13,9 @@ register_heif_opener()
 # --- 1. KONEKSI KE OTAK AI ---
 @st.cache_resource
 def download_dan_muat_model():
-    id_drive = '1AbjMsB3EZr5wRamQmdLNUjbUGaYpvOEt' 
+    id_drive = '1TrvlItbr8YeTnkes4FF5CpNB5ApmcpK7' # ⬅️ GANTI BAGIAN INI DENGAN ID GOOGLE DRIVE KAMU
     url = f'https://drive.google.com/uc?id={id_drive}'
-    nama_file = 'model_sampah_v2.h5'
+    nama_file = 'model_sampah_v3.h5'
     if not os.path.exists(nama_file):
         with st.spinner('Menyiapkan Kapur dan Papan Tulis...'):
             gdown.download(url, nama_file, quiet=False)
@@ -46,15 +46,14 @@ ide_anorganik = [
     {"ide": "💡 Lampu Hias Botol Kaca", "modal": "Rp 35.000 (Lampu LED strip)", "jual": "Rp 120.000 / pcs", "target": "Kafe kekinian & dekorasi kamar."}
 ]
 
-# FITUR BARU: Database Fakta Dampak Lingkungan
 dampak_organik = [
-    "🌍 Mengomposkan sampah ini mencegah timbulnya gas metana beracun di TPA.",
+    "🌍 Keren! Mengomposkan sampah ini mencegah timbulnya gas metana beracun di TPA.",
     "🌱 Sisa organik ini berpotensi menyuburkan 1 pot tanaman hias kesayanganmu.",
     "💧 Daur ulang sisa makanan membantu menjaga kelembapan tanah dan menghemat air lho!"
 ]
 
 dampak_anorganik = [
-    "🌍 Mendaur ulang sampah plastik ini menghemat energi setara menyalakan lampu LED 3 jam!",
+    "🌍 Hebat! Mendaur ulang sampah plastik ini menghemat energi setara menyalakan lampu LED 3 jam!",
     "♻️ Terima kasih! Kamu baru saja mencegah sampah sulit hancur ini mencemari lautan kita.",
     "🌳 Aksi daur ulangmu hari ini ikut membantu mengurangi jejak karbon di atmosfer bumi."
 ]
@@ -129,7 +128,7 @@ st.markdown("""
     [data-testid="baseButton-secondary"] { background-color: transparent !important; color: #F8F8FF !important; border: 2px solid #F8F8FF !important; border-radius: 15px !important; font-size: 20px !important; }
     [data-testid="baseButton-secondary"]:hover { background-color: #F8F8FF !important; color: #2F4F4F !important; }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # --- 5. TATA LETAK ---
 st.markdown("<h1 style='text-align: center; font-size: 60px;'>DETEKTOR SAMPAH</h1>", unsafe_allow_html=True)
@@ -155,12 +154,18 @@ with kol_kanan:
     
     if foto and 'tombol' in locals() and tombol:
         with st.spinner('Menganalisis pola dan menghitung jejak karbon...'):
-            img_res = img_asli.resize((180, 180))
+            img_res = img_asli.resize((150, 150)) # ⬅️ Sudah disesuaikan untuk otak V3
             arr = tf.keras.utils.img_to_array(img_res)
             arr = tf.expand_dims(arr, 0)
             
             pred = model.predict(arr, verbose=0)
-            hasil = np.argmax(tf.nn.softmax(pred[0]))
+            
+            # ⬅️ LOGIKA KEPUTUSAN AI BARU (Transfer Learning Sigmoid)
+            if pred[0][0] < 0.5:
+                hasil = 0 # Organik
+            else:
+                hasil = 1 # Anorganik
+            
             img_xray = buat_xray_kontur(img_asli)
             
             if hasil == 0:
@@ -172,13 +177,14 @@ with kol_kanan:
                 bisnis = random.choice(ide_anorganik) 
                 dampak = random.choice(dampak_anorganik)
             
-            # --- FITUR BARU: MENAMPILKAN KOTAK JEJAK KARBON ---
+            # --- FITUR: KOTAK JEJAK KARBON ---
             st.markdown(f"""
                 <div class="eco-impact">
                     <p style="color: #E8F5E9 !important; font-size: 22px !important; margin: 0 !important;">{dampak}</p>
                 </div>
             """, unsafe_allow_html=True)
             
+            # --- FITUR: PROPOSAL BISNIS ---
             st.markdown(f"""
                 <div class="business-note">
                     <h3 style="color: #3E2723 !important;">💡 Peluang Bisnis Daur Ulang:</h3>
@@ -191,6 +197,7 @@ with kol_kanan:
                 </div>
             """, unsafe_allow_html=True)
 
+            # --- FITUR: RADAR GOOGLE MAPS ---
             if hasil != 0:
                 st.markdown("""
                     <a href="https://www.google.com/maps/search/Bank+Sampah+Terdekat" target="_blank" class="maps-btn">
