@@ -18,7 +18,7 @@ genai.configure(api_key=API_KEY_GEMINI)
 
 def analisis_mendalam_gemini(img, tebakan_awal):
     try:
-        model_gemini = genai.GenerativeModel('gemini-1.5-flash')
+        model_gemini = genai.GenerativeModel('gemini-2.5-flash')
         prompt = f"""Kamu adalah konsultan bisnis dan pengolahan limbah. 
         Mata sensor AI kami menebak gambar ini masuk kategori: {tebakan_awal}. 
         Tolong analisa gambar ini seperti manusia:
