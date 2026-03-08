@@ -12,8 +12,8 @@ from pillow_heif import register_heif_opener
 register_heif_opener()
 
 # --- 1. KONFIGURASI OTAK LOGIKA (GEMINI API) ---
-# ⬇️ MASUKKAN API KEY GEMINI KAMU DI DALAM TANDA KUTIP DI BAWAH INI ⬇️
-API_KEY_GEMINI = "AIzaSyBb91GinWcUQ_9hPShEEbELUlm0iKx8Tqw"
+# Mengambil kunci dengan aman dari brankas Streamlit Secrets
+API_KEY_GEMINI = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=API_KEY_GEMINI)
 
 def analisis_mendalam_gemini(img, tebakan_awal):
