@@ -58,95 +58,80 @@ dampak_anorganik = [
     "🌳 Aksi daur ulangmu hari ini ikut membantu mengurangi jejak karbon di atmosfer bumi."
 ]
 
-# --- 4. DESAIN CSS PAPAN TULIS & BINGKAI KAYU (VERSI ULTRA) ---
+# --- 4. DESAIN CSS PAPAN TULIS & BINGKAI KAYU ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
-    
-    /* PENGATURAN WARNA DASAR SELURUH LAYAR */
-    [data-testid="stAppViewContainer"] { background-color: #2c3e50 !important; }
-    [data-testid="stHeader"] { background-color: transparent !important; }
-    html, body, p, span, h1, h2, h3, h4, li, div {
-        font-family: 'Caveat', cursive !important;
-        letter-spacing: 1px;
-    }
-    
-    /* --- TEKSTUR PAPAN TULIS & GRID --- */
+    .stApp { background-color: #2c3e50 !important; }
     .block-container {
         background-color: #2F4F4F !important; 
-        /* Membuat efek garis kotak-kotak tipis seperti buku tulis matematika */
-        background-image: 
-            linear-gradient(rgba(255,255,255,0.05) 2px, transparent 2px),
-            linear-gradient(90deg, rgba(255,255,255,0.05) 2px, transparent 2px) !important;
-        background-size: 30px 30px !important;
         border: 15px solid #5C4033 !important; 
         border-radius: 10px !important;
         padding: 40px !important;
-        /* Efek gelap di pinggiran (vignette) agar terlihat seperti papan sungguhan */
-        box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 10px 10px 30px rgba(0,0,0,0.8) !important; 
+        box-shadow: 10px 10px 30px rgba(0,0,0,0.5) !important;
         max-width: 1000px !important;
     }
-
-    /* --- ANTI-LIGHT MODE UNTUK KOTAK UPLOAD HP --- */
-    [data-testid="stFileUploadDropzone"] { 
-        background-color: rgba(0, 0, 0, 0.5) !important; /* Paksa latar jadi gelap transparan */
-        border: 2px dashed #F8F8FF !important; 
-        border-radius: 10px !important;
+    html, body, [class*="css"], p, span, div, label, h1, h2, h3, h4 {
+        font-family: 'Caveat', 'Comic Sans MS', cursive !important;
+        color: #F8F8FF !important;
+        letter-spacing: 1px;
     }
-    [data-testid="stFileUploadDropzone"] * { 
-        color: #F8F8FF !important; /* Paksa semua teks di dalamnya jadi putih */
+    .polaroid-frame {
+        background-color: #F5F5DC !important;
+        padding: 10px 10px 35px 10px !important;
+        box-shadow: 3px 3px 15px rgba(0,0,0,0.6) !important;
+        border-radius: 2px !important;
+        transform: rotate(-2deg);
+        display: block; margin: 0 auto;
     }
-    [data-testid="stFileUploadDropzone"] button {
-        background-color: #4CAF50 !important; /* Paksa tombol browse jadi hijau */
-        color: white !important;
-        border: 2px solid white !important;
+    .xray-frame {
+        background-color: #000000 !important;
+        padding: 5px !important;
+        border: 2px solid #00FF00 !important;
+        box-shadow: 0px 0px 15px #00FF00 !important;
+        border-radius: 5px !important;
     }
-
-    /* --- ANIMASI JUDUL MENGAMBANG --- */
-    @keyframes float-animation {
-        0% { transform: translateY(0px); text-shadow: 0px 5px 10px rgba(0,0,0,0.5); }
-        50% { transform: translateY(-15px); text-shadow: 0px 20px 15px rgba(0,0,0,0.3); }
-        100% { transform: translateY(0px); text-shadow: 0px 5px 10px rgba(0,0,0,0.5); }
+    .business-note {
+        background-color: #FFF9C4 !important;
+        padding: 20px !important;
+        border-radius: 2px !important;
+        transform: rotate(1deg);
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.4) !important;
+        border-top: 15px solid #FFD54F !important;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
-    .judul-mengambang {
-        animation: float-animation 3s ease-in-out infinite;
-        text-align: center; font-size: 65px; color: #F8F8FF !important; margin-bottom: 0px;
-    }
-
-    /* --- ANIMASI TOMBOL BERDENYUT KENCANG --- */
-    @keyframes pulse-animation {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.8); }
-        50% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-    }
-    div.stButton > button { 
-        animation: pulse-animation 2s infinite !important; 
-        background-color: #4CAF50 !important; 
-        color: white !important; 
-        border: 2px solid white !important; 
-        border-radius: 15px !important; 
-        font-size: 24px !important; 
-        height: 60px !important;
-        box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important;
-    }
-    div.stButton > button:hover { background-color: #45a049 !important; }
-
-    /* --- Elemen Dasar Lainnya --- */
-    h2, p { color: #F8F8FF !important; }
-    .polaroid-frame { background-color: #F5F5DC !important; padding: 10px 10px 35px 10px !important; box-shadow: 3px 3px 15px rgba(0,0,0,0.6) !important; border-radius: 2px !important; transform: rotate(-2deg); display: block; margin: 0 auto; }
-    .xray-frame { background-color: #000000 !important; padding: 5px !important; border: 2px solid #00FF00 !important; box-shadow: 0px 0px 15px #00FF00 !important; border-radius: 5px !important; }
-    .business-note { background-color: #FFF9C4 !important; padding: 20px !important; border-radius: 2px !important; transform: rotate(1deg); box-shadow: 5px 5px 15px rgba(0,0,0,0.4) !important; border-top: 15px solid #FFD54F !important; margin-top: 20px; margin-bottom: 20px; }
     div.business-note * { color: #3E2723 !important; text-shadow: none !important; }
-    .maps-btn { background-color: #4CAF50 !important; color: white !important; padding: 12px 20px !important; text-align: center !important; text-decoration: none !important; display: block !important; font-size: 22px !important; font-family: 'Caveat', cursive !important; border-radius: 10px !important; border: 2px solid white !important; box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important; transition: 0.3s !important; margin-top: 15px; margin-bottom: 25px; }
-    .maps-btn:hover { transform: scale(1.02); }
-    .eco-impact { background-color: rgba(76, 175, 80, 0.1) !important; border-left: 5px dashed #4CAF50 !important; padding: 15px !important; border-radius: 5px !important; margin-top: 10px; margin-bottom: 20px; }
+    
+    .maps-btn {
+        background-color: #4CAF50 !important; color: white !important; padding: 12px 20px !important;
+        text-align: center !important; text-decoration: none !important; display: block !important;
+        font-size: 22px !important; font-family: 'Caveat', cursive !important; border-radius: 10px !important;
+        border: 2px solid white !important; box-shadow: 3px 3px 10px rgba(0,0,0,0.5) !important;
+        transition: 0.3s !important; margin-top: 15px; margin-bottom: 25px;
+    }
+    .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
+    
+    /* FITUR BARU: Desain Kotak Jejak Karbon */
+    .eco-impact {
+        background-color: rgba(76, 175, 80, 0.1) !important;
+        border-left: 5px dashed #4CAF50 !important;
+        padding: 15px !important;
+        border-radius: 5px !important;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    
+    [data-testid="stFileUploadDropzone"] { background-color: transparent !important; border: 2px dashed #F8F8FF !important; }
+    [data-testid="baseButton-secondary"] { background-color: transparent !important; color: #F8F8FF !important; border: 2px solid #F8F8FF !important; border-radius: 15px !important; font-size: 20px !important; }
+    [data-testid="baseButton-secondary"]:hover { background-color: #F8F8FF !important; color: #2F4F4F !important; }
     </style>
 """, unsafe_allow_html=True)
 
 # --- 5. TATA LETAK ---
-st.markdown("<h1 class='judul-mengambang'>DETEKTOR SAMPAH</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; font-size: 60px;'>DETEKTOR SAMPAH</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-size: 20px;'>Dibuat oleh: Kelompok 3 - Business Management 🎓</p>", unsafe_allow_html=True)
 st.markdown("<hr style='border: 1px solid rgba(255,255,255,0.2);'>", unsafe_allow_html=True)
 
@@ -169,12 +154,13 @@ with kol_kanan:
     
     if foto and 'tombol' in locals() and tombol:
         with st.spinner('Menganalisis pola dan menghitung jejak karbon...'):
-            img_res = img_asli.resize((150, 150))
+            img_res = img_asli.resize((150, 150)) # ⬅️ Sudah disesuaikan untuk otak V3
             arr = tf.keras.utils.img_to_array(img_res)
             arr = tf.expand_dims(arr, 0)
             
             pred = model.predict(arr, verbose=0)
             
+            # ⬅️ LOGIKA KEPUTUSAN AI BARU (Transfer Learning Sigmoid)
             if pred[0][0] < 0.5:
                 hasil = 0 # Organik
             else:
