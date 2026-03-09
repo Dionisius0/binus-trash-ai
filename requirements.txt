@@ -5,3 +5,4 @@ numpy
 gdown
 pillow-heif
 google-generativeai
+matplotlib
