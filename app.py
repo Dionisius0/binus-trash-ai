@@ -95,23 +95,17 @@ st.markdown("""
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
 
-    /* REVISI FINAL MUTLAK: KOTAK TUNGGU ANTI-MELAR */
-    .kotak-tunggu {
-        background-color: rgba(33, 150, 243, 0.05) !important;
-        border: 2px dashed #2196F3 !important;
-        border-radius: 8px !important;
-        height: 115px !important; /* Paksa presisi 115px */
-        max-height: 115px !important; /* Batas atas tidak bisa ditembus */
-        box-sizing: border-box !important; /* KUNCI RAHASIA: Mematikan efek bengkak dari padding */
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 10px 20px !important; 
-        font-size: 17px !important; 
-        color: #F8F8FF !important;
-        text-align: center !important;
-        margin-top: 0px !important;
-        overflow: hidden !important; /* Jika teks kelebihan, potong agar kotak tidak melar */
+    /* ANIMASI JARI MENUNJUK */
+    @keyframes geser-kiri {
+        0%, 20%, 50%, 80%, 100% {transform: translateX(0);}
+        40% {transform: translateX(-15px);}
+        60% {transform: translateX(-7px);}
+    }
+    .ikon-tunjuk {
+        font-size: 60px;
+        display: inline-block;
+        animation: geser-kiri 2s infinite;
+        margin-bottom: -15px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -172,7 +166,14 @@ with kanan:
             st.markdown("### 👁️ Struktur Material (Sinar-X):")
             st.image(buat_xray_kontur(img_asli), use_container_width=True)
     else:
-        st.markdown('<div class="kotak-tunggu">Unggah foto di sebelah kiri untuk menguji kekuatan Kolaborasi 2 AI!</div>', unsafe_allow_html=True)
+        # DESAIN TIPOGRAFI MELAYANG PENGGANTI KOTAK
+        st.markdown("""
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 10px;">
+                <span class="ikon-tunjuk">👈</span>
+                <h3 style="color: #F8F8FF; font-family: 'Caveat', cursive; font-size: 35px; margin-bottom: 0;">Kamera Sudah Siap!</h3>
+                <p style="color: #D3D3D3; font-family: 'Caveat', cursive; font-size: 22px; text-align: center;">Tarik & lepas foto sampahmu ke kotak di sebelah kiri untuk memulai.</p>
+            </div>
+        """, unsafe_allow_html=True)
 
 st.write("---")
 st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas & Kardus | 🍎 Sisa Makanan")
