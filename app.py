@@ -12,7 +12,6 @@ from pillow_heif import register_heif_opener
 register_heif_opener()
 
 # --- 1. KONFIGURASI OTAK LOGIKA (GEMINI API) ---
-# Mengambil kunci dengan aman dari brankas Streamlit Secrets
 API_KEY_GEMINI = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=API_KEY_GEMINI)
 
@@ -87,7 +86,6 @@ st.markdown("""
     .business-note { background: #fff9c4; padding: 25px; border-radius: 5px; border-top: 15px solid #fbc02d; color: #333 !important; margin-top: 20px;}
     .business-note * { color: #333 !important; }
     
-    /* KEMBALIKAN DESAIN TOMBOL MAPS */
     .maps-btn {
         background-color: #4CAF50 !important; color: white !important; padding: 12px 20px !important;
         text-align: center !important; text-decoration: none !important; display: block !important;
@@ -96,6 +94,21 @@ st.markdown("""
         transition: 0.3s !important; margin-top: 20px; margin-bottom: 25px;
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
+
+    /* DESAIN KOTAK TUNGGU SIMETRIS BARU */
+    .kotak-tunggu {
+        background-color: rgba(33, 150, 243, 0.15) !important;
+        border-left: 5px solid #2196F3 !important;
+        border-radius: 5px !important;
+        min-height: 135px !important; /* Memaksa tinggi agar sejajar dengan kotak uploader */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        font-size: 22px !important;
+        color: #F8F8FF !important;
+        text-align: center !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -108,6 +121,7 @@ kiri, kanan = st.columns(2)
 
 with kiri:
     st.markdown("### 1. UNGGAH FOTO ☁️")
+    # Penambahan label_visibility="collapsed" agar posisi tidak anjlok ke bawah
     foto = st.file_uploader("Unggah", type=["jpg", "png", "jpeg", "webp", "jfif", "heic", "JPG", "PNG", "JPEG"], label_visibility="collapsed")
     if foto:
         img_asli = Image.open(foto).convert('RGB')
@@ -145,7 +159,6 @@ with kanan:
                 </div>
             """, unsafe_allow_html=True)
             
-            # --- KEMBALIKAN FITUR: RADAR GOOGLE MAPS ---
             if status == "ANORGANIK / DAUR ULANG ♻️":
                 st.markdown("""
                     <a href="https://www.google.com/maps/search/Bank+Sampah+Terdekat" target="_blank" class="maps-btn">
@@ -156,7 +169,8 @@ with kanan:
             st.markdown("### 👁️ Struktur Material (Sinar-X):")
             st.image(buat_xray_kontur(img_asli), use_container_width=True)
     else:
-        st.info("Unggah foto di sebelah kiri untuk menguji kekuatan Kolaborasi 2 AI!")
+        # PENGGUNAAN KOTAK TUNGGU KUSTOM SEBAGAI PENGGANTI st.info()
+        st.markdown('<div class="kotak-tunggu">Unggah foto di sebelah kiri untuk menguji kekuatan Kolaborasi 2 AI!</div>', unsafe_allow_html=True)
 
 st.write("---")
 st.write("🍃 Kompos | 🥤 Plastik | 📰 Kertas & Kardus | 🍎 Sisa Makanan")
