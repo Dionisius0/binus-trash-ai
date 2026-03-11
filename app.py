@@ -56,7 +56,7 @@ def buat_xray_kontur(img_asli):
     colored_edges = np.uint8(colored_edges * 255)
     return Image.fromarray(colored_edges).convert("RGB")
 
-# --- 4. DESAIN UI GLASSMORPHISM & PAPAN TULIS ---
+# --- 4. DESAIN UI SLIGHT GLASS & PAPAN TULIS ---
 st.set_page_config(page_title="Detektor Sampah Binus", page_icon="♻️", layout="wide")
 
 st.markdown("""
@@ -81,28 +81,29 @@ st.markdown("""
     /* EFEK GLOWING PADA JUDUL */
     h1 { text-shadow: 0 0 15px rgba(152, 251, 152, 0.6) !important; }
 
-    /* KEAJAIBAN GLASSMORPHISM YANG DIPERKUAT (SUPER GLASS) */
+    /* KEAJAIBAN SLIGHT GLASSMORPHISM (REVISI MUTLAK) */
     [data-testid="column"], div[data-testid="column"], [data-testid="stVerticalBlock"] > div > div > div > div {
-        background-color: rgba(255, 255, 255, 0.1) !important; /* Dibuat lebih pekat */
-        backdrop-filter: blur(15px) !important; /* Efek blur kaca buram */
-        -webkit-backdrop-filter: blur(15px) !important;
-        border: 2px solid rgba(255, 255, 255, 0.25) !important; /* Garis dasar */
-        border-top: 2px solid rgba(255, 255, 255, 0.6) !important; /* Pantulan cahaya terang di atas */
-        border-left: 2px solid rgba(255, 255, 255, 0.6) !important; /* Pantulan cahaya terang di kiri */
-        border-radius: 25px !important;
-        padding: 35px 25px !important;
-        box-shadow: 5px 15px 35px rgba(0, 0, 0, 0.4) !important; /* Bayangan 3D lebih dalam */
+        background-color: rgba(255, 255, 255, 0.08) !important; /* REVISI: Sedikit saja ditipiskan, tidak terlalu banyak */
+        backdrop-filter: blur(12px) !important; /* REVISI: Sedikit lebih tipis blur-nya agar jernih */
+        -webkit-backdrop-filter: blur(12px) !important;
+        
+        /* REVISI TOTAL BORDER: Hancurkan multi-border, sisa satu garis tipis minimalis */
+        border: 1px solid rgba(255, 255, 255, 0.15) !important; /* REVISI: Border hanya 1px dan sangat tipis transparan */
+        
+        border-radius: 20px !important;
+        padding: 30px 20px !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important; /* Bayangan 3D lebih minimalis */
     }
 
     /* DESAIN KOTAK UPLOAD DALAM KACA */
     [data-testid="stFileUploadDropzone"] { 
-        background-color: rgba(0, 0, 0, 0.3) !important; /* Lebih gelap agar kontras */
-        border: 2px dashed rgba(255, 255, 255, 0.6) !important;
+        background-color: rgba(0, 0, 0, 0.2) !important; /* Kembali agak transparan agar estetik */
+        border: 2px dashed rgba(255, 255, 255, 0.4) !important;
         border-radius: 15px !important;
     }
     [data-testid="stFileUploadDropzone"] * { color: #F8F8FF !important; font-weight: bold !important; }
     [data-testid="stFileUploadDropzone"] button { 
-        background-color: rgba(255,255,255,0.15) !important; 
+        background-color: rgba(255,255,255,0.1) !important; 
         color: white !important; 
         border: 1px solid white !important; 
         border-radius: 8px !important; 
@@ -111,7 +112,7 @@ st.markdown("""
     /* ANIMASI IKON MELAYANG (CLOUD & TARGET) */
     @keyframes float {
         0% { transform: translateY(0px); }
-        50% { transform: translateY(-12px); }
+        50% { transform: translateY(-10px); }
         100% { transform: translateY(0px); }
     }
     .glowing-icon {
@@ -130,10 +131,10 @@ st.markdown("""
     .business-note * { color: #333 !important; }
     
     .maps-btn {
-        background-color: rgba(76, 175, 80, 0.8) !important; color: white !important; padding: 12px 20px !important;
+        background-color: rgba(76, 175, 80, 0.7) !important; color: white !important; padding: 12px 20px !important;
         text-align: center !important; text-decoration: none !important; display: block !important;
         font-size: 22px !important; font-family: 'Caveat', cursive !important; border-radius: 10px !important;
-        border: 1px solid white !important; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4) !important;
+        border: 1px solid white !important; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
         transition: 0.3s !important; margin-top: 20px; margin-bottom: 10px;
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
