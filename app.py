@@ -95,20 +95,19 @@ st.markdown("""
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
 
-    /* REVISI FINAL: KOTAK TUNGGU SUPER KETAT */
+    /* REVISI MUTLAK: KOTAK TUNGGU PRESISI 95PX */
     .kotak-tunggu {
         background-color: rgba(33, 150, 243, 0.1) !important;
         border: 2px dashed #2196F3 !important;
         border-radius: 8px !important;
-        height: 105px !important; /* Dipaksa lebih pendek lagi */
+        height: 95px !important; /* Tinggi fix 95 piksel, sama persis dengan tinggi minimal kotak upload */
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 5px 15px !important; /* Padding atas bawah ditekan habis */
-        font-size: 17px !important; /* Huruf sedikit dikecilkan */
+        padding: 0 15px !important; /* Hilangkan padding atas-bawah */
+        font-size: 16px !important; 
         color: #F8F8FF !important;
-        text-align: center !important;
-        margin-top: 0px !important;
+        margin-bottom: -20px !important; /* MENGHANCURKAN MARGIN GAIB BAWAAN STREAMLIT */
     }
     </style>
 """, unsafe_allow_html=True)
