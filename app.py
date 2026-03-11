@@ -95,17 +95,17 @@ st.markdown("""
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
 
-    /* DESAIN KOTAK TUNGGU SIMETRIS BARU */
+    /* REVISI: DESAIN KOTAK TUNGGU DIKECILKAN AGAR PRESISI */
     .kotak-tunggu {
-        background-color: rgba(33, 150, 243, 0.15) !important;
-        border-left: 5px solid #2196F3 !important;
-        border-radius: 5px !important;
-        min-height: 135px !important; /* Memaksa tinggi agar sejajar dengan kotak uploader */
+        background-color: rgba(33, 150, 243, 0.1) !important;
+        border: 2px dashed #2196F3 !important; /* Diubah jadi dashed agar serasi dengan uploader */
+        border-radius: 8px !important;
+        height: 115px !important; /* Paksa tinggi 115px agar presisi dengan uploader */
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 20px !important;
-        font-size: 22px !important;
+        padding: 10px !important;
+        font-size: 18px !important; /* Font dikecilkan agar kotak tidak membengkak */
         color: #F8F8FF !important;
         text-align: center !important;
     }
@@ -121,7 +121,6 @@ kiri, kanan = st.columns(2)
 
 with kiri:
     st.markdown("### 1. UNGGAH FOTO ☁️")
-    # Penambahan label_visibility="collapsed" agar posisi tidak anjlok ke bawah
     foto = st.file_uploader("Unggah", type=["jpg", "png", "jpeg", "webp", "jfif", "heic", "JPG", "PNG", "JPEG"], label_visibility="collapsed")
     if foto:
         img_asli = Image.open(foto).convert('RGB')
@@ -169,7 +168,6 @@ with kanan:
             st.markdown("### 👁️ Struktur Material (Sinar-X):")
             st.image(buat_xray_kontur(img_asli), use_container_width=True)
     else:
-        # PENGGUNAAN KOTAK TUNGGU KUSTOM SEBAGAI PENGGANTI st.info()
         st.markdown('<div class="kotak-tunggu">Unggah foto di sebelah kiri untuk menguji kekuatan Kolaborasi 2 AI!</div>', unsafe_allow_html=True)
 
 st.write("---")
