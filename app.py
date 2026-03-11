@@ -95,19 +95,20 @@ st.markdown("""
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
 
-    /* REVISI: DESAIN KOTAK TUNGGU DIKECILKAN AGAR PRESISI */
+    /* REVISI FINAL: KOTAK TUNGGU SUPER KETAT */
     .kotak-tunggu {
         background-color: rgba(33, 150, 243, 0.1) !important;
-        border: 2px dashed #2196F3 !important; /* Diubah jadi dashed agar serasi dengan uploader */
+        border: 2px dashed #2196F3 !important;
         border-radius: 8px !important;
-        height: 115px !important; /* Paksa tinggi 115px agar presisi dengan uploader */
+        height: 105px !important; /* Dipaksa lebih pendek lagi */
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 10px !important;
-        font-size: 18px !important; /* Font dikecilkan agar kotak tidak membengkak */
+        padding: 5px 15px !important; /* Padding atas bawah ditekan habis */
+        font-size: 17px !important; /* Huruf sedikit dikecilkan */
         color: #F8F8FF !important;
         text-align: center !important;
+        margin-top: 0px !important;
     }
     </style>
 """, unsafe_allow_html=True)
