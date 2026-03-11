@@ -107,6 +107,22 @@ st.markdown("""
         animation: geser-kiri 2s infinite;
         margin-bottom: -15px;
     }
+
+    /* GARIS PEMBATAS VERTIKAL (HANYA MUNCUL DI LAYAR LEBAR) */
+    @media (min-width: 768px) {
+        [data-testid="column"]:nth-of-type(2) {
+            position: relative !important;
+            padding-left: 35px !important; /* Memberi jarak agar konten tidak menabrak garis */
+        }
+        [data-testid="column"]:nth-of-type(2)::before {
+            content: "" !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 5% !important;      /* Menyisakan ruang di ujung atas */
+            height: 90% !important;  /* Menyisakan ruang di ujung bawah */
+            border-left: 3px dashed rgba(255, 255, 255, 0.2) !important; /* Garis kapur putus-putus */
+        }
+    }
     </style>
 """, unsafe_allow_html=True)
 
