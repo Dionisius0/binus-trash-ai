@@ -108,7 +108,7 @@ kiri, kanan = st.columns(2)
 
 with kiri:
     st.markdown("### 1. UNGGAH FOTO ☁️")
-    foto = st.file_uploader("", type=["jpg", "png", "jpeg", "webp", "jfif", "heic", "JPG", "PNG", "JPEG"])
+    foto = st.file_uploader("Unggah", type=["jpg", "png", "jpeg", "webp", "jfif", "heic", "JPG", "PNG", "JPEG"], label_visibility="collapsed")
     if foto:
         img_asli = Image.open(foto).convert('RGB')
         st.markdown('<div class="polaroid">', unsafe_allow_html=True)
