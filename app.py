@@ -81,26 +81,28 @@ st.markdown("""
     /* EFEK GLOWING PADA JUDUL */
     h1 { text-shadow: 0 0 15px rgba(152, 251, 152, 0.6) !important; }
 
-    /* KEAJAIBAN GLASSMORPHISM UNTUK KOTAK KOLOM */
-    [data-testid="column"] {
-        background: rgba(255, 255, 255, 0.05) !important; /* Kaca transparan tipis */
-        backdrop-filter: blur(12px) !important; /* Efek blur kaca buram */
-        -webkit-backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Garis pinggir kaca berpendar */
-        border-radius: 20px !important;
-        padding: 25px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important; /* Bayangan 3D */
+    /* KEAJAIBAN GLASSMORPHISM YANG DIPERKUAT (SUPER GLASS) */
+    [data-testid="column"], div[data-testid="column"], [data-testid="stVerticalBlock"] > div > div > div > div {
+        background-color: rgba(255, 255, 255, 0.1) !important; /* Dibuat lebih pekat */
+        backdrop-filter: blur(15px) !important; /* Efek blur kaca buram */
+        -webkit-backdrop-filter: blur(15px) !important;
+        border: 2px solid rgba(255, 255, 255, 0.25) !important; /* Garis dasar */
+        border-top: 2px solid rgba(255, 255, 255, 0.6) !important; /* Pantulan cahaya terang di atas */
+        border-left: 2px solid rgba(255, 255, 255, 0.6) !important; /* Pantulan cahaya terang di kiri */
+        border-radius: 25px !important;
+        padding: 35px 25px !important;
+        box-shadow: 5px 15px 35px rgba(0, 0, 0, 0.4) !important; /* Bayangan 3D lebih dalam */
     }
 
     /* DESAIN KOTAK UPLOAD DALAM KACA */
     [data-testid="stFileUploadDropzone"] { 
-        background-color: rgba(0, 0, 0, 0.2) !important; 
-        border: 2px dashed rgba(255, 255, 255, 0.4) !important;
+        background-color: rgba(0, 0, 0, 0.3) !important; /* Lebih gelap agar kontras */
+        border: 2px dashed rgba(255, 255, 255, 0.6) !important;
         border-radius: 15px !important;
     }
     [data-testid="stFileUploadDropzone"] * { color: #F8F8FF !important; font-weight: bold !important; }
     [data-testid="stFileUploadDropzone"] button { 
-        background-color: rgba(255,255,255,0.1) !important; 
+        background-color: rgba(255,255,255,0.15) !important; 
         color: white !important; 
         border: 1px solid white !important; 
         border-radius: 8px !important; 
@@ -109,7 +111,7 @@ st.markdown("""
     /* ANIMASI IKON MELAYANG (CLOUD & TARGET) */
     @keyframes float {
         0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
+        50% { transform: translateY(-12px); }
         100% { transform: translateY(0px); }
     }
     .glowing-icon {
@@ -146,7 +148,6 @@ st.write("---")
 kiri, kanan = st.columns(2)
 
 with kiri:
-    # IKON AWAN MELAYANG
     st.markdown('<span class="glowing-icon glowing-icon-cloud">☁️</span>', unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>1. UNGGAH FOTO</h3>", unsafe_allow_html=True)
     
@@ -160,7 +161,6 @@ with kiri:
         tombol = st.button("MULAI ANALISIS ➜", use_container_width=True)
 
 with kanan:
-    # IKON TARGET MELAYANG
     st.markdown('<span class="glowing-icon glowing-icon-target">🎯</span>', unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>2. HASIL ANALISIS</h3>", unsafe_allow_html=True)
     
@@ -200,15 +200,14 @@ with kanan:
             st.markdown("### 👁️ Struktur Material (Sinar-X):")
             st.image(buat_xray_kontur(img_asli), use_container_width=True)
     else:
-        # TAMPILAN KOSONG ELEGAN
         st.markdown("""
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 20px;">
                 <span style="font-size: 50px; animation: float 2s infinite;">👇</span>
-                <p style="color: #D3D3D3; font-family: 'Caveat', cursive; font-size: 22px; text-align: center; margin-top: 15px;">
+                <p style="color: #F8F8FF; font-family: 'Caveat', cursive; font-size: 24px; text-align: center; margin-top: 15px;">
                     Kamera AI Sudah Siap!<br>Tarik & lepas foto sampahmu ke kotak di sebelah kiri.
                 </p>
             </div>
         """, unsafe_allow_html=True)
 
 st.write("---")
-st.markdown("<h4 style='text-align: center; color: #D3D3D3;'>🌱 Kompos &nbsp; | &nbsp; 🚰 Plastik &nbsp; | &nbsp; 📰 Kertas & Kardus &nbsp; | &nbsp; 🍎 Sisa Makanan</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align: center; color: #D3D3D3;'>🌱 Kompos   |   🚰 Plastik   |   📰 Kertas & Kardus   |   🍎 Sisa Makanan</h4>", unsafe_allow_html=True)
