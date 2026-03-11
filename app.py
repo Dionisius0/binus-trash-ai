@@ -95,19 +95,23 @@ st.markdown("""
     }
     .maps-btn:hover { background-color: #45a049 !important; transform: scale(1.02); }
 
-    /* REVISI MUTLAK: KOTAK TUNGGU PRESISI 95PX */
+    /* REVISI FINAL MUTLAK: KOTAK TUNGGU ANTI-MELAR */
     .kotak-tunggu {
-        background-color: rgba(33, 150, 243, 0.1) !important;
+        background-color: rgba(33, 150, 243, 0.05) !important;
         border: 2px dashed #2196F3 !important;
         border-radius: 8px !important;
-        height: 95px !important; /* Tinggi fix 95 piksel, sama persis dengan tinggi minimal kotak upload */
+        height: 115px !important; /* Paksa presisi 115px */
+        max-height: 115px !important; /* Batas atas tidak bisa ditembus */
+        box-sizing: border-box !important; /* KUNCI RAHASIA: Mematikan efek bengkak dari padding */
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 0 15px !important; /* Hilangkan padding atas-bawah */
-        font-size: 16px !important; 
+        padding: 10px 20px !important; 
+        font-size: 17px !important; 
         color: #F8F8FF !important;
-        margin-bottom: -20px !important; /* MENGHANCURKAN MARGIN GAIB BAWAAN STREAMLIT */
+        text-align: center !important;
+        margin-top: 0px !important;
+        overflow: hidden !important; /* Jika teks kelebihan, potong agar kotak tidak melar */
     }
     </style>
 """, unsafe_allow_html=True)
